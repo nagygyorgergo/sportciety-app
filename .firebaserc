@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "ioniclearning-5996e": {
+      "hosting": {
+        "app": [
+          "sportciety-app"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "sportciety-app"
+  }
+}

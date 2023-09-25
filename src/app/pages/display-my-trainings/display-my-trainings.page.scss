@@ -1,0 +1,41 @@
+.trainingplan-name{
+  font-family: 'Montserrat', sans-serif;
+  font-weight: bold;
+  
+}
+
+.exercise-item {
+  --padding-start: 0;
+}
+
+.exercise-name {
+font-weight: bold;
+}
+
+.exercise-details {
+--padding-start: 0;
+}
+
+
+.exercise-detail-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+  --ion-item-padding-start: 0;
+}
+
+
+.exercise-detail-item ion-icon {
+margin-right: 5px;
+}
+
+.exercise-detail-item ion-icon:first-child {
+margin-left: 0;
+}
+
+.exercise-detail-item, .exercise-name{
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+}
+

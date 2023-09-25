@@ -1,0 +1,42 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Signup</ion-title> 
+  </ion-toolbar>
+</ion-header>
+ 
+<ion-content class="ion-padding" [fullscreen]="true">
+  <form [formGroup]="credentials" (ngSubmit)="signup()">
+
+    <ion-item fill="solid" class="ion-margin-bottom">
+      <ion-input type="text" placeholder="Username" formControlName="username"></ion-input>
+      <ion-note slot="end" *ngIf="getUsername().invalid && getUsername().touched">
+        <span *ngIf="getUsername().errors?.required">Username is required.</span>
+        <span *ngIf="getUsername().errors?.email">Invalid username format.</span>
+      </ion-note>
+    </ion-item>
+    <ion-item fill="solid" class="ion-margin-bottom">
+      <ion-input type="email" placeholder="Email" formControlName="email"></ion-input>
+      <ion-note slot="end" *ngIf="getEmail().invalid && getEmail().touched">
+        <span *ngIf="getEmail().errors?.required">Email is required.</span>
+        <span *ngIf="getEmail().errors?.email">Invalid email format.</span>
+      </ion-note>
+    </ion-item>
+    <ion-item fill="solid" class="ion-margin-bottom">
+      <ion-label>Date of birth</ion-label>
+      <ion-datetime formControlName="date" presentation="date"></ion-datetime>
+    </ion-item>    
+    <ion-item fill="solid" class="ion-margin-bottom">
+      <ion-input type="password" placeholder="Password" formControlName="password"></ion-input>
+      <ion-note slot="end" *ngIf="getPassword().invalid && getPassword().touched">
+        <span *ngIf="getPassword().errors?.required">Password is required.</span>
+        <span *ngIf="getPassword().errors?.minlength">Must be at least 8 characters long.</span>
+      </ion-note>
+    </ion-item>
+
+    <ion-button expand="full" type="submit" [disabled]="!credentials.valid">Signup</ion-button>
+    <ion-button expand="full" type="button" (click)="redirectToLogin()">Login</ion-button>
+  </form>
+</ion-content>

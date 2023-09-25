@@ -1,0 +1,30 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Profile</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding" [fullscreen]="true">
+  <div class="preview">
+    <ion-avatar (click)="changeImage()">
+      <img *ngIf="profile?.imageUrl; else placeholder_avatar;" [src]="profile.imageUrl">
+      <ng-template #placeholder_avatar>
+        <div class="fallback">
+          <p>Select avatar</p>
+        </div>
+      </ng-template>
+    </ion-avatar>
+  </div> 
+  <ion-item fill="solid">
+    <ion-label>User email: {{email}}</ion-label>
+  </ion-item>
+  <ion-item fill="solid">
+    <ion-label>Username: {{username}}</ion-label>
+  </ion-item>
+  <ion-item fill="solid">
+    <ion-label>Date of birth: {{dateOfBirth | date:'YYYY-MM-dd'}}</ion-label>
+  </ion-item>
+</ion-content>

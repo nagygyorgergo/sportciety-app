@@ -1,0 +1,86 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Plan new training</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <div class="content">
+    <form [formGroup]="nameForm" (ngSubmit)="addNewTraining()">
+      <ion-item fill="solid" class="ion-margin-bottom">
+        <ion-input type="text" placeholder="Training name" formControlName="name"></ion-input>
+        <ion-note slot="end" *ngIf="this.nameForm.get('name')?.value.invalid && this.nameForm.get('name')?.value.touched">
+          <span *ngIf="this.nameForm.get('name').errors?.required">Name is required.</span>
+        </ion-note>
+      </ion-item>
+
+      <form [formGroup]="details" (ngSubmit)="addExercise()">
+        <ion-item fill="solid" class="ion-margin-bottom">
+          <ion-input type="text" placeholder="Exercise name" formControlName="exerciseName"></ion-input>
+          <ion-note slot="end" *ngIf="details.get('exerciseName')?.invalid && details.get('exerciseName')?.touched">
+            <span *ngIf="details.get('exerciseName').errors?.required">Exercise name is required.</span>
+          </ion-note>
+        </ion-item>
+      
+        <ion-item fill="solid" class="ion-margin-bottom">
+          <ion-label>Weight</ion-label>
+          <ion-select formControlName="weight">
+            <ion-select-option value="light">Light</ion-select-option>
+            <ion-select-option value="medium">Medium</ion-select-option>
+            <ion-select-option value="heavy">Heavy</ion-select-option>
+          </ion-select>
+          <ion-note slot="end" *ngIf="details.get('weight')?.invalid && details.get('weight')?.touched">
+            <span *ngIf="details.get('weight').errors?.required">Weight is required.</span>
+          </ion-note>
+        </ion-item>
+      
+        <ion-item fill="solid" class="ion-margin-bottom">
+          <ion-label>Rounds</ion-label>
+          <ion-input type="number" formControlName="rounds" min="0"></ion-input>
+          <ion-note slot="end" *ngIf="details.get('rounds')?.invalid && details.get('rounds')?.touched">
+            <span *ngIf="details.get('rounds').errors?.required">Rounds are required.</span>
+          </ion-note>
+        </ion-item>
+      
+        <ion-item fill="solid" class="ion-margin-bottom">
+          <ion-label>Reps</ion-label>
+          <ion-input type="number" formControlName="reps" min="0"></ion-input>
+          <ion-note slot="end" *ngIf="details.get('reps')?.invalid && details.get('reps')?.touched">
+            <span *ngIf="details.get('reps').errors?.required">Reps are required.</span>
+          </ion-note>
+        </ion-item>
+      
+        <ion-button expand="full" type="submit" [disabled]="details.invalid">Add exercise</ion-button>
+      </form>        
+  
+      <ion-button expand="full" type="submit" [disabled]="nameForm.invalid || addedExercises.length === 0">Add training</ion-button>
+
+    </form>
+  </div>
+
+  <ion-list>
+    <ion-item *ngFor="let exercise of addedExercises">
+      <ion-label class="exercise-name">{{ exercise.name }}</ion-label>
+          <ion-list class="exercise-details">
+            <ion-item class="exercise-detail-item">
+              <ion-icon name="repeat-outline"></ion-icon>
+              <ion-label>{{ exercise.reps }}</ion-label>
+            </ion-item>
+            <ion-item class="exercise-detail-item">
+              <ion-icon name="albums-outline"></ion-icon>
+              <ion-label>{{ exercise.rounds }}</ion-label>
+            </ion-item>
+            <ion-item class="exercise-detail-item">
+              <ion-icon name="barbell-outline"></ion-icon>
+              <ion-label>{{ exercise.weight }}</ion-label>
+            </ion-item>
+          </ion-list>
+    </ion-item>
+  </ion-list>
+
+</ion-content>
+
+ 

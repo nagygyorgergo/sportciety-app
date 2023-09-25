@@ -1,0 +1,7 @@
+{
+  "name": "imdbDeployable",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
