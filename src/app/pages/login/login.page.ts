@@ -44,7 +44,7 @@ export class LoginPage implements OnInit {
     await loading.dismiss();
 
     if(user){
-      this.router.navigateByUrl('/movies', {replaceUrl: true});
+      this.router.navigateByUrl('/', {replaceUrl: true});
     }else{
       this.showAlert('Login failed', 'Try again');
     }

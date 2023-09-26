@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { AuthService } from './services/auth.service';
 import { Router } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
@@ -9,7 +9,7 @@ import { IonMenu, MenuController } from '@ionic/angular';
   styleUrls: ['app.component.scss'],
 })
 
-export class AppComponent {
+export class AppComponent implements OnInit{
   public appPages = [
     { title: 'Home', url: '', icon: 'home' },
     { title: 'Profile', url: 'profile', icon: 'person' },
@@ -18,9 +18,11 @@ export class AppComponent {
     { title: 'Trash', url: '/folder/trash', icon: 'trash' },
   ];
   //public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
-  email: any;
+  
   @ViewChild('menu', { static: true }) menu: IonMenu | any;
-
+  email: any;
+  themeToggle = false;
+  
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -29,7 +31,35 @@ export class AppComponent {
       this.afAuth.authState.subscribe(user=>{
         this.email=user?.email;
       });
-    }
+  }
+
+  ngOnInit() {
+    // Use matchMedia to check the user preference
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+    // Initialize the dark theme based on the initial
+    // value of the prefers-color-scheme media query
+    this.initializeDarkTheme(prefersDark.matches);
+
+    // Listen for changes to the prefers-color-scheme media query
+    prefersDark.addEventListener('change', (mediaQuery) => this.initializeDarkTheme(mediaQuery.matches));
+  }
+
+  // Check/uncheck the toggle and update the theme based on isDark
+  initializeDarkTheme(isDark: boolean) {
+    this.themeToggle = isDark;
+    this.toggleDarkTheme(isDark);
+  }
+
+  // Listen for the toggle check/uncheck to toggle the dark theme
+  toggleChange(event: any) {
+    this.toggleDarkTheme(event.detail.checked);
+  }
+
+  // Add or remove the "dark" class on the document body
+  toggleDarkTheme(shouldAdd: boolean) {
+    document.body.classList.toggle('dark', shouldAdd);
+  }
 
   async logout(){
     this.afAuth.authState.subscribe(user =>{

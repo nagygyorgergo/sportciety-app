@@ -74,7 +74,7 @@ export class SignupPage implements OnInit {
       console.error(error);
     } finally {
       await loading.dismiss();
-      this.router.navigateByUrl('/movies', { replaceUrl: true });
+      this.router.navigateByUrl('/', { replaceUrl: true });
     }
   }
   

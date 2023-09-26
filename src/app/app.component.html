@@ -12,6 +12,12 @@
               <ion-label>{{ p.title }}</ion-label>
             </ion-item>
           </ion-menu-toggle>
+          
+          <ion-item>
+            <ion-toggle [(ngModel)]="themeToggle" (ionChange)="toggleChange($event)" justify="space-between"
+              >Dark Mode</ion-toggle
+            >
+          </ion-item>
 
           <ion-button expand="full" (click)="logout()">Logout</ion-button>
         </ion-list>
