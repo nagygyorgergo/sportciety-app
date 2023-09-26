@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from '@angular/fire/auth';
+import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from '@angular/fire/auth';
 import { getAuth, AuthError } from 'firebase/auth';
 @Injectable({
   providedIn: 'root'
@@ -52,4 +52,23 @@ export class AuthService {
   logout(){
     return signOut(this.auth);
   }
+
+  async forgotPassword(email: string) {
+    try {
+      const auth = getAuth();
+      await sendPasswordResetEmail(auth, email);
+      return true; // Password reset email sent successfully
+    } catch (error) {
+      const errorCode = (error as AuthError).code;
+      if (errorCode === 'auth/user-not-found') {
+        // Handle user not found error (email not registered)
+        console.log('User not found with this email address');
+      } else {
+        // Handle other errors
+        console.error('Error sending password reset email:', error);
+      }
+      return false; // Password reset email sending failed
+    }
+  }
+  
 }

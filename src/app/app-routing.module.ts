@@ -8,22 +8,12 @@ const redirectLoggedInToHome = () => redirectLoggedInTo(['']);
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'movies',
+    redirectTo: 'profile',
     pathMatch: 'full'
   },
   {
     path: 'folder/:id',
     loadChildren: () => import('./folder/folder.module').then( m => m.FolderPageModule),
-  },
-  {
-    path: 'movies',
-    loadChildren: () => import('./pages/movies/movies.module').then( m => m.MoviesPageModule),
-    ...canActivate(redirectUnauthorizedToLogin)
-  },
-  {
-    path: 'movies/:id',
-    loadChildren: () => import('./pages/movie-details/movie-details.module').then( m => m.MovieDetailsPageModule),
-    ...canActivate(redirectUnauthorizedToLogin)
   },
   {
     path: 'login',
@@ -50,9 +40,11 @@ const routes: Routes = [
     loadChildren: () => import('./pages/display-my-trainings/display-my-trainings.module').then( m => m.DisplayMyTrainingsPageModule),
     ...canActivate(redirectUnauthorizedToLogin)
   },
-
-
-
+  {
+    path: 'forgot-password',
+    loadChildren: () => import('./pages/forgot-password/forgot-password.module').then( m => m.ForgotPasswordPageModule),
+    ...canActivate(redirectLoggedInToHome)
+  },
 
 ];
 

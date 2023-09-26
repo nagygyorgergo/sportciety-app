@@ -11,7 +11,7 @@ import { IonMenu, MenuController } from '@ionic/angular';
 
 export class AppComponent {
   public appPages = [
-    { title: 'Trending Movies', url: 'movies', icon: 'film' },
+    { title: 'Home', url: '', icon: 'home' },
     { title: 'Profile', url: 'profile', icon: 'person' },
     { title: 'Plan new training', url: 'plan-training', icon: 'barbell' },
     { title: 'View my trainings', url: 'display-my-trainings', icon: 'archive' },

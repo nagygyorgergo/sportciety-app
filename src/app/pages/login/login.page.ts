@@ -63,4 +63,9 @@ export class LoginPage implements OnInit {
     this.router.navigateByUrl('/signup', {replaceUrl: true});
   }
 
+  redirectToForgotPassword(){
+    this.router.navigateByUrl('/forgot-password', {replaceUrl: true});
+  }
+  
+
 }

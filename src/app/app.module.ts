@@ -16,9 +16,10 @@ import { provideStorage,getStorage } from '@angular/fire/storage';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFireModule } from '@angular/fire/compat';
 import {AngularFirestoreModule } from '@angular/fire/compat/firestore';
-import { ReactiveFormsModule } from '@angular/forms';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -26,6 +27,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,
   HttpClientModule,
   ReactiveFormsModule,
+  FormsModule,
   BrowserAnimationsModule,
   AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
