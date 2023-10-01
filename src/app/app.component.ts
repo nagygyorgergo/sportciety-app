@@ -11,13 +11,12 @@ import { IonMenu, MenuController } from '@ionic/angular';
 
 export class AppComponent implements OnInit{
   public appPages = [
-    { title: 'Home', url: '', icon: 'home' },
+    { title: 'Home', url: 'home', icon: 'home' },
     { title: 'Profile', url: 'profile', icon: 'person' },
     { title: 'Plan new training', url: 'plan-training', icon: 'barbell' },
     { title: 'View my trainings', url: 'display-my-trainings', icon: 'archive' },
     { title: 'Trash', url: '/folder/trash', icon: 'trash' },
   ];
-  //public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
   
   @ViewChild('menu', { static: true }) menu: IonMenu | any;
   email: any;

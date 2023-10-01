@@ -8,12 +8,8 @@ const redirectLoggedInToHome = () => redirectLoggedInTo(['']);
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'profile',
+    redirectTo: 'home',
     pathMatch: 'full'
-  },
-  {
-    path: 'folder/:id',
-    loadChildren: () => import('./folder/folder.module').then( m => m.FolderPageModule),
   },
   {
     path: 'login',
@@ -45,6 +41,12 @@ const routes: Routes = [
     loadChildren: () => import('./pages/forgot-password/forgot-password.module').then( m => m.ForgotPasswordPageModule),
     ...canActivate(redirectLoggedInToHome)
   },
+  {
+    path: 'home',
+    loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule),
+    ...canActivate(redirectUnauthorizedToLogin)
+  },
+
 
 ];
 
