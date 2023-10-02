@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { User } from '../models/user.model';
 import { Observable, map } from 'rxjs';
+import { user } from '@angular/fire/auth';
 
 @Injectable({
   providedIn: 'root'
@@ -31,4 +32,11 @@ export class UserService {
         map(users => users[0])
       );
   }
+
+  getUserByUsername(username: string) {
+    return this.angularFirestore
+      .collection<User>('users', ref => ref.where('username', '>=', username).where('username', '<=', username + '\uf8ff'))
+      .valueChanges({ usernameField: 'username' });
+  }
+  
 }

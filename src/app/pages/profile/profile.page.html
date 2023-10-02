@@ -10,13 +10,9 @@
 <ion-content class="ion-padding" [fullscreen]="true">
   <div class="preview">
     <ion-avatar (click)="changeImage()">
-      <img *ngIf="profile?.imageUrl; else placeholder_avatar;" [src]="profile.imageUrl">
-      <ng-template #placeholder_avatar>
-        <div class="fallback">
-          <p>Select avatar</p>
-        </div>
-      </ng-template>
+      <img  [src]="imageUrl">
     </ion-avatar>
+    
   </div> 
   <ion-item fill="solid">
     <ion-label>User email: {{email}}</ion-label>
@@ -27,4 +23,7 @@
   <ion-item fill="solid">
     <ion-label>Date of birth: {{dateOfBirth | date:'YYYY-MM-dd'}}</ion-label>
   </ion-item>
+  
+  <ion-button expand="full" (click)="redirectToFriendsPage()">Manage friends</ion-button>
+  
 </ion-content>

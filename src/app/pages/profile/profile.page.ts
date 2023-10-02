@@ -20,6 +20,7 @@ export class ProfilePage implements OnInit {
   email: string | any;
   dateOfBirth: any;
   uid: any;
+  imageUrl: string = '../../assets/default-profile-picture.png';
 
   constructor(
     private userService: UserService,
@@ -32,17 +33,10 @@ export class ProfilePage implements OnInit {
   ){
     this.avatarService.getUserProfile()?.subscribe((data)=>{
       this.profile = data;
+      this.imageUrl = data['imageUrl'] || '../../assets/default-profile-picture.png';
+      console.log(this.profile);
     });
 
-   /*  this.afAuth.authState.subscribe(user => {
-      if (user) {
-        this.uid = user.uid;
-        this.email = user.email;
-        console.log(this.uid); // Log the uid inside the subscribe callback
-      } else {
-        this.uid = null;
-      }
-    }); */
     this.afAuth.authState.subscribe(user => {
       if (user) {
         this.email = user.email;
@@ -88,6 +82,10 @@ export class ProfilePage implements OnInit {
         await alert.present();
       }
     }
+  }
+
+  redirectToFriendsPage(){
+    this.router.navigateByUrl('/friends', {replaceUrl: true});
   }
 
 }  

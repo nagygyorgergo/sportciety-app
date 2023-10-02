@@ -5,9 +5,10 @@ import { Firestore, doc, docData } from '@angular/fire/firestore';
 import { Storage } from '@angular/fire/storage';*/
 import { Photo } from '@capacitor/camera'; 
 
-import { Firestore, doc, docData, setDoc } from '@angular/fire/firestore';
+import { DocumentData, Firestore, doc, docData, getDoc, getFirestore, setDoc } from '@angular/fire/firestore';
 import { getAuth, User } from 'firebase/auth';
 import { getDownloadURL, ref, Storage, uploadString } from '@angular/fire/storage';
+import { Observable, catchError, from, of } from 'rxjs';
 
 
 @Injectable({
@@ -31,32 +32,17 @@ export class AvatarService {
       return null;
     }
   }
- 
-  /* async uploadImage(cameraFile: Photo) {
-    const user: User | null = this.auth.currentUser;
-    if (user) {
-      const path = `uploads/${user.uid}/profile.png`;
-      const storageRef = ref(this.storage as Storage, path);
-      if (cameraFile.base64String) {
-        try {
-          await uploadString(storageRef, cameraFile.base64String, 'base64');
 
-          const imageUrl = await getDownloadURL(storageRef);
-          const userDocRef = doc(this.firestore, `users/${user.uid}`);
-          await setDoc(userDocRef,{
-            imageUrl,
-          });
-          return true;
-        } catch (e) {
-          // Handle the error here
-          return null;
-        }
-      }
-      return null;
+  getImageURL(uid: string){
+    if (uid) {
+      const imageDocRef = doc(this.firestore, `users/${uid}`); // Reference to the Firestore document
+      return docData(imageDocRef);
+    } else {
+      return null; // Return a resolved promise that resolves to null
     }
-    return null;
-  } */
+  }
 
+  //upload profile picture
   async uploadImage(cameraFile: Photo) {
     const user: User | null = this.auth.currentUser;
     if (user) {

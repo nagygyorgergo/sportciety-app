@@ -45,10 +45,10 @@ import { AlertController } from '@ionic/angular';
 })
 
 export class DisplayMyTrainingsPage implements OnInit {
-  currentUid: string | any;
+  currentUid: string = '';
   expandedTrainings: Set<string> = new Set<string>();
   
-  searchTerm: string | any;
+  searchTerm: string = '';
   myTrainingPlans: Training[] = [];
   filteredTrainingPlans: Training[] = [];
 
