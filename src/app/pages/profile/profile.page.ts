@@ -34,7 +34,7 @@ export class ProfilePage implements OnInit {
     this.avatarService.getUserProfile()?.subscribe((data)=>{
       this.profile = data;
       this.imageUrl = data['imageUrl'] || '../../assets/default-profile-picture.png';
-      console.log(this.profile);
+      //console.log(this.profile);
     });
 
     this.afAuth.authState.subscribe(user => {
@@ -47,7 +47,7 @@ export class ProfilePage implements OnInit {
         });
         
         this.userService.getUserById(this.uid).subscribe(user=>{
-          this.dateOfBirth=user.dateOfBirth;
+          this.dateOfBirth = user.dateOfBirth;
         });
       }  
     });
