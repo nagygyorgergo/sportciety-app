@@ -31,6 +31,9 @@ export class FriendsPage implements OnInit {
   //current user's image Url
   currentUserImageUrl!: string;
 
+  // Array to hold the friends' user data and listing friend users
+  friends: User[] = []; 
+
   constructor(
     private userService: UserService,
     private avatarService: AvatarService,
@@ -51,6 +54,9 @@ export class FriendsPage implements OnInit {
 
         // Call listFriendRequests only after currentUserUid is set
         this.listFriendRequests();
+
+        // List friends initially
+        this.listFriends();
       }
 
       this.avatarService.getUserProfile()?.subscribe((data)=>{
@@ -96,26 +102,51 @@ export class FriendsPage implements OnInit {
   }
 
   //Send friend request to user, gets parameter in friends.page.html
-  async sendFriendRequest(otherUserUid: string) {
+  async sendFriendRequest(receiverUserUid: string) {
     try {
-      await this.friendRequestService.addFriendRequest(this.currentUserUid, this.currentUserUsername, otherUserUid, this.currentUserImageUrl);
+      // Check if a friend request with the same sender and receiver already exists
+      const existingRequest = await this.friendRequestService.checkExistingRequest(
+        this.currentUserUid,
+        receiverUserUid
+        );
 
-      // Show a success alert
+      console.log(existingRequest);
+
+      if (existingRequest) {
+        // If an existing friend request is found, notify the user
+        const alert = await this.alertController.create({
+          header: 'Friend Request Exists',
+          message: 'You have already sent a friend request to this user.',
+          buttons: ['OK'],
+        });
+        await alert.present();
+      } else {
+        
+        // If no existing request is found, proceed to send the friend request
+       await this.friendRequestService.addFriendRequest(
+          this.currentUserUid,
+          this.currentUserUsername,
+          receiverUserUid,
+          this.currentUserImageUrl
+        );
+
+        // Show a success alert
+        const alert = await this.alertController.create({
+          header: 'Friend Request Sent',
+          message: 'Your friend request has been sent successfully!',
+          buttons: ['OK'],
+        });
+        await alert.present();
+      }
+    } catch (error) {
       const alert = await this.alertController.create({
-        header: 'Friend Request Sent',
-        message: 'Your friend request has been sent successfully!',
+        header: 'Friend Request Error',
+        message: 'Your friend request could not be sent. An error occurred.',
         buttons: ['OK'],
       });
-
       await alert.present();
-    } catch (error) {
       console.error('Error sending friend request:', error);
     }
-  }
-
-  //Delete friend request
-  deleteFriendRequest(otherUserUid: string){
-    this.friendRequestService.deleteFriendRequest(this.currentUserUid, otherUserUid);
   }
 
   //list current user's friend requests
@@ -125,11 +156,54 @@ export class FriendsPage implements OnInit {
         this.friendRequests = friendRequests;
       });
   }
-
   
-  
-  changeFriendRequestStatus(value: number){
-
+  //Accept or reject firned request: 0-->reject, 1-->accept
+  async changeFriendRequestStatus(value: number, senderUserUid: string){
+    if(value === 0){
+      const alert = await this.alertController.create({
+        header: 'Friend Request rejected',
+        message: 'You rejcted the friend request',
+        buttons: ['OK'],
+      });
+      this.friendRequestService.deleteFriendRequest(this.currentUserUid, senderUserUid);
+      await alert.present();
+    }
+    else{
+      const alert = await this.alertController.create({
+        header: 'Friend Request accepted',
+        message: 'You are now friends',
+        buttons: ['OK'],
+      });
+      this.friendRequestService.addFriendToUser(this.currentUserUid, senderUserUid);
+      this.friendRequestService.deleteFriendRequest(this.currentUserUid, senderUserUid);
+      await alert.present();
+    }
   }
+
+  //list users that are already friends
+  listFriends(){
+    this.friendRequestService.listFriends(this.currentUserUid).subscribe((friendsData: User[]) => {
+      // Populate the friends array with the retrieved data
+      this.friends = friendsData;
+    });
+  }
+
+  /*returns true if the uid parameter is already inside the friends array.
+  Used to prevent adding a fiend several times.*/
+  isFriend(uid: string): boolean {
+    return this.friends.some(friend => friend.uid === uid);
+  }
+
+  async deleteFriend(friendUid: string){
+    const alert = await this.alertController.create({
+      header: 'Delete friend',
+      message: 'Friend deleted successfully',
+      buttons: ['OK'],
+    });
+    console.log('Deleted: ' + friendUid);
+    this.friendRequestService.deleteFriend(this.currentUserUid, friendUid);
+    await alert.present();
+  }
+  
 
 }

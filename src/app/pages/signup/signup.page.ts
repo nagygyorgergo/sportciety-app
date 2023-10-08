@@ -61,7 +61,9 @@ export class SignupPage implements OnInit {
             uid: cred.uid,
             email: email,
             username: this.getUsername()?.value,
-            dateOfBirth: this.credentials.get('date')?.value
+            dateOfBirth: this.credentials.get('date')?.value,
+            friendUids: [],
+            imageUrl: '../../assets/default-profile-picture.png'
           };
   
           await this.userService.createUser(user);

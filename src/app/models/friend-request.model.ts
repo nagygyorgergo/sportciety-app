@@ -1,8 +1,8 @@
 export interface FriendRequest {
     imageUrl: string,
-    currentUserUid: string,
-    currentUserUsername: string,
-    otherUserUid: string,
+    senderUserUid: string,
+    senderUserUsername: string,
+    recieverUserUid: string,
     date: number,
     status: number,
 }

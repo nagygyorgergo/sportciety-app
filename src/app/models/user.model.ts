@@ -3,5 +3,7 @@ export interface User {
     username: string,
     email: string,
     dateOfBirth: number,
+    imageUrl: string,
+    friendUids: string[]
     
 }

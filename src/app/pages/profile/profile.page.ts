@@ -2,12 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { AlertController, LoadingController } from '@ionic/angular';
-import { throwIfEmpty } from 'rxjs';
-import { AuthService } from '../../services/auth.service'; 
 import { AvatarService } from '../../services/avatar.service';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { UserService } from '../../services/user.service';
-import { User } from 'src/app/models/user.model';
 
 @Component({
   selector: 'app-profile',
@@ -26,7 +23,6 @@ export class ProfilePage implements OnInit {
     private userService: UserService,
     private afAuth: AngularFireAuth,
     private avatarService: AvatarService,
-    private authService: AuthService,
     private router: Router,
     private loadingController: LoadingController,
     private alertController: AlertController
