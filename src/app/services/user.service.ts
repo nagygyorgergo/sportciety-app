@@ -31,11 +31,21 @@ export class UserService {
         map(users => users[0])
       );
   }
-
-  getUserByUsername(username: string) {
-    return this.angularFirestore
-      .collection<User>('users', ref => ref.where('username', '>=', username).where('username', '<=', username + '\uf8ff'))
-      .valueChanges({ usernameField: 'username' });
-  }
   
+  getUserByUsername(partialUsername: string) {
+    return this.angularFirestore.collection<User>('users').snapshotChanges().pipe(
+      map(actions => {
+        return actions.map(action => {
+          const data = action.payload.doc.data() as User;
+          const id = action.payload.doc.id;
+          return { id, ...data };
+        });
+      }),
+      map(users => {
+        return users.filter(user =>
+          user.username.toLowerCase().includes(partialUsername.toLowerCase())
+        );
+      })
+    );
+  }
 }

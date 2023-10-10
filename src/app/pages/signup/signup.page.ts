@@ -13,7 +13,7 @@ import { User } from '../../models/user.model';
 })
 export class SignupPage implements OnInit {
   credentials: FormGroup|any;
-  newUser: User | any;
+  newUser!: User;
 
   constructor(
     private fb: FormBuilder,
@@ -29,7 +29,8 @@ export class SignupPage implements OnInit {
       username: ['', [Validators.required, Validators.minLength(4)]],
       email: ['', [Validators.required, Validators.email]],
       date: ['2000-01-01', [Validators.required]],
-      password: ['', [Validators.required, Validators.minLength(8)]]
+      password: ['', [Validators.required, Validators.minLength(8)]],
+      imageUrl: '../../assets/default-profile-picture.png'
     });
   }
 

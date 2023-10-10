@@ -12,10 +12,9 @@ import { Router } from '@angular/router';
   styleUrls: ['./plan-training.page.scss'],
 })
 export class PlanTrainingPage implements OnInit {
-  currentUid: string | any;
-  details: FormGroup | any;
-  nameForm: FormGroup | any;
-  /* addedExercises: Exercise[] |any; */
+  currentUid!: string;
+  details!: FormGroup | any;
+  nameForm!: FormGroup | any;
   addedExercises: Exercise[] = [];
 
   constructor(

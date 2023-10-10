@@ -1,5 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { user } from '@angular/fire/auth';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { DocumentData } from '@angular/fire/compat/firestore';
 import { AlertController } from '@ionic/angular';
@@ -57,12 +58,12 @@ export class FriendsPage implements OnInit {
 
         // List friends initially
         this.listFriends();
-      }
 
-      this.avatarService.getUserProfile()?.subscribe((data)=>{
-        this.currentUserImageUrl = data['imageUrl'] || '../../assets/default-profile-picture.png';
-        //console.log(this.profile);
-      });
+        this.avatarService.getUserProfile()?.subscribe((data)=>{
+          this.currentUserImageUrl = data['imageUrl'] || '../../assets/default-profile-picture.png';
+          //console.log(this.profile);
+        });
+      }
     });
   }
 
@@ -72,12 +73,12 @@ export class FriendsPage implements OnInit {
       this.results = []; // Clear the results array
       console.log(this.searchTerm);
       return;
-    } 
-  
-    searchTerm = searchTerm.toLowerCase();
+    }
   
     this.userService.getUserByUsername(searchTerm).subscribe((users: User[]) => {
       this.resultUsers = users;
+
+      console.log(this.resultUsers);
   
       // Create an array of observables to fetch image URLs
       const observables = this.resultUsers.map((user: User) =>

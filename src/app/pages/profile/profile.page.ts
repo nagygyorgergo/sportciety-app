@@ -13,10 +13,10 @@ import { UserService } from '../../services/user.service';
 })
 export class ProfilePage implements OnInit {
   profile: any;
-  username: string |any;
+  username!: string;
   email: string | any;
-  dateOfBirth: any;
-  uid: any;
+  dateOfBirth!: number;
+  uid!: string;
   imageUrl: string = '../../assets/default-profile-picture.png';
 
   constructor(

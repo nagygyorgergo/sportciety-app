@@ -10,7 +10,7 @@ import { AuthService } from '../../services/auth.service';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnInit {
-  credentials: FormGroup|any;
+  credentials: FormGroup |any;
 
   constructor(
     private fb: FormBuilder,
