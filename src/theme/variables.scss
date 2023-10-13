@@ -4,28 +4,28 @@
 /** Ionic CSS Variables **/
 :root {
   /** primary **/
-  --ion-color-primary: #931e9e;
-  --ion-color-primary-rgb: 56, 128, 255;
-  --ion-color-primary-contrast: #ffffff;
-  --ion-color-primary-contrast-rgb: 255, 255, 255;
-  --ion-color-primary-shade: #31e0e0;
-  --ion-color-primary-tint: #ff4cff;
+  --ion-color-primary: #ffca38; /* Yellow */
+  --ion-color-primary-rgb: 255, 202, 56;
+  --ion-color-primary-contrast: #000000;
+  --ion-color-primary-contrast-rgb: 0, 0, 0;
+  --ion-color-primary-shade: #e0b231;
+  --ion-color-primary-tint: #ffcf4c;
 
   /** secondary **/
-  --ion-color-secondary: #3dc2ff;
-  --ion-color-secondary-rgb: 61, 194, 255;
+  --ion-color-secondary: #000000; /* Black */
+  --ion-color-secondary-rgb: 0, 0, 0;
   --ion-color-secondary-contrast: #ffffff;
   --ion-color-secondary-contrast-rgb: 255, 255, 255;
-  --ion-color-secondary-shade: #36abe0;
-  --ion-color-secondary-tint: #50c8ff;
+  --ion-color-secondary-shade: #000000;
+  --ion-color-secondary-tint: #333333;
 
   /** tertiary **/
-  --ion-color-tertiary: #52ffeb;
-  --ion-color-tertiary-rgb: 82, 96, 255;
+  --ion-color-tertiary: #a052ff; /* Purple (adjust as needed) */
+  --ion-color-tertiary-rgb: 160, 82, 255;
   --ion-color-tertiary-contrast: #ffffff;
   --ion-color-tertiary-contrast-rgb: 255, 255, 255;
-  --ion-color-tertiary-shade: #4854e0;
-  --ion-color-tertiary-tint: #6370ff;
+  --ion-color-tertiary-shade: #8d48e0;
+  --ion-color-tertiary-tint: #aa63ff;
 
   /** success **/
   --ion-color-success: #2dd36f;

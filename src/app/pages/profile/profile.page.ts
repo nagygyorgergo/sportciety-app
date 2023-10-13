@@ -84,4 +84,8 @@ export class ProfilePage implements OnInit {
     this.router.navigateByUrl('/friends', {replaceUrl: true});
   }
 
+  redirectToCreatePostPage(){
+    this.router.navigateByUrl('/create-post', {replaceUrl: true});
+  }
+
 }  

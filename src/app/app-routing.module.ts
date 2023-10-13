@@ -51,6 +51,12 @@ const routes: Routes = [
     loadChildren: () => import('./pages/friends/friends.module').then( m => m.FriendsPageModule),
     ...canActivate(redirectUnauthorizedToLogin)
   },
+  {
+    path: 'create-post',
+    loadChildren: () => import('./pages/create-post/create-post.module').then( m => m.CreatePostPageModule),
+    ...canActivate(redirectUnauthorizedToLogin)
+  },
+
 
 
 
