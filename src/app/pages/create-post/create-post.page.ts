@@ -37,19 +37,20 @@ export class CreatePostPage implements OnInit {
  
   createPost() {
     this.createPostService.createPost(this.postText)
-      .then(docRef => {
-        console.log('Post created with ID: ' + docRef.id);
-        this.createdPostId = docRef.id;
+      .then(postId => {
+        if (postId) {
+          console.log('Post created with ID: ' + postId);
+          this.createdPostId = postId;
+          this.isPostCreated = true;
+        } else {
+          console.error('Error creating post: Post ID is null');
+        }
       })
       .catch(error => {
         console.error('Error creating post:', error);
-      })
-      .finally(() => {
-        // Set isPostCreating back to false when post creation is complete
         this.isPostCreated = true;
-      });;
+      });
   }
-
   
   async uploadImage(){
     const image = await Camera.getPhoto({

@@ -8,7 +8,9 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-input placeholder="Enter your post text" [(ngModel)]="postText"></ion-input>
-  <ion-button (click)="createPost()" [disabled]="isPostCreated">Create Post</ion-button>
-  <ion-button (click)="uploadImage()" [disabled]="!isPostCreated">Upload Image</ion-button>
+  <ion-card>
+    <ion-textarea class="ion-padding" placeholder="Enter your post text" [(ngModel)]="postText"></ion-textarea>
+    <ion-button expand="full" (click)="createPost()" [disabled]="isPostCreated">Create post</ion-button>
+    <ion-button expand="full" (click)="uploadImage()" [disabled]="!isPostCreated">Upload image to post</ion-button>
+  </ion-card>
 </ion-content>
