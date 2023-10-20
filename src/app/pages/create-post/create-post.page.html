@@ -10,7 +10,10 @@
 <ion-content [fullscreen]="true">
   <ion-card>
     <ion-textarea class="ion-padding" placeholder="Enter your post text" [(ngModel)]="postText"></ion-textarea>
-    <ion-button expand="full" (click)="createPost()" [disabled]="isPostCreated">Create post</ion-button>
-    <ion-button expand="full" (click)="uploadImage()" [disabled]="!isPostCreated">Upload image to post</ion-button>
+
+    <img [src]="imageLocalPath" *ngIf="imageLocalPath" class="image-preview">
+    <ion-button expand="full" (click)="selectImage()" >Select image to post</ion-button>
+
+    <ion-button expand="full" (click)="createPost()" [disabled]="isPostCreated || isPostTextEmpty()">Create post</ion-button>
   </ion-card>
 </ion-content>

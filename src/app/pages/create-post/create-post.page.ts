@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
-import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { Camera, CameraResultType, CameraSource, Photo } from '@capacitor/camera';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { Post } from 'src/app/models/post.model';
 import { CreatePostService } from 'src/app/services/create-post.service';
@@ -16,6 +16,9 @@ export class CreatePostPage implements OnInit {
   postText: string = '';
   createdPostId: string = ''; //Used to make image name the same as the post id.
   isPostCreated: boolean = false; //Only able to upload image if post exists
+
+  image!: Photo;
+  imageLocalPath = '';
 
   constructor(
     private loadingController: LoadingController,
@@ -34,33 +37,49 @@ export class CreatePostPage implements OnInit {
     });
     
   }
- 
-  createPost() {
-    this.createPostService.createPost(this.postText)
-      .then(postId => {
-        if (postId) {
-          console.log('Post created with ID: ' + postId);
-          this.createdPostId = postId;
-          this.isPostCreated = true;
-        } else {
-          console.error('Error creating post: Post ID is null');
-        }
-      })
-      .catch(error => {
-        console.error('Error creating post:', error);
-        this.isPostCreated = true;
-      });
+
+  // Check if the textarea is empty or contains only whitespace
+  isPostTextEmpty() {
+    return !this.postText || this.postText.trim() === '';
   }
   
-  async uploadImage(){
-    const image = await Camera.getPhoto({
+  async createPost() {
+    try {
+      const postId = await this.createPostService.createPost(this.postText);
+      
+      if (postId) {
+        console.log('Post created with ID: ' + postId);
+        this.createdPostId = postId;
+        this.isPostCreated = true;
+  
+        await this.uploadImage(this.image);
+        console.log(this.image);
+        this.redirectToProfile();
+      } else {
+        console.error('Error creating post: Post ID is null');
+      }
+    } catch (error) {
+      console.error('Error creating post:', error);
+      this.isPostCreated = true;
+    }
+  }
+
+  async selectImage() {
+    this.image = await Camera.getPhoto({
       quality: 90,
       allowEditing: false,
       resultType: CameraResultType.Base64,
-      source: CameraSource.Photos
+      source: CameraSource.Photos,
     });
-    console.log(image);
+  
+    if (this.image) {
+      this.imageLocalPath = 'data:image/png;base64,' + this.image.base64String;
+      console.log('Base64String: ' + this.image.base64String);
+    }
+  }
+  
 
+  async uploadImage(image: Photo){
     if(image){
       const loading = await this.loadingController.create();
       await loading.present;
@@ -76,7 +95,6 @@ export class CreatePostPage implements OnInit {
         await alert.present();
       }
     }
-    this.redirectToProfile();
   }
 
   

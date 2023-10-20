@@ -7,11 +7,9 @@
   </ion-toolbar>
 </ion-header>
 
-
 <ion-content [fullscreen]="true">
  <ion-list>
   <ion-card *ngFor="let post of userPosts">
-
     <ng-container *ngFor="let imageUrl of postImages">
       <ion-img *ngIf="imageUrl.includes(post.id)" alt="Uploaded image" [src]="imageUrl">
         <ion-spinner name="circular"></ion-spinner>
@@ -35,6 +33,9 @@
     </ion-card-content>
 
   </ion-card>
+  
+  <ion-button *ngIf="userPosts.length === 0" expand="full" (click)="redirectToFriendsPage()">Find friends</ion-button>
+
 </ion-list>
 
 <ion-infinite-scroll threshold="100px" (ionInfinite)="loadNextPage($event)">

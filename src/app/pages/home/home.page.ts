@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { Router } from '@angular/router';
 import { IonInfiniteScroll, LoadingController } from '@ionic/angular';
 import { Observable, map } from 'rxjs';
 import { Post } from 'src/app/models/post.model';
@@ -30,7 +31,7 @@ export class HomePage implements OnInit {
     private userService: UserService,
     private afAuth: AngularFireAuth,
     private loadingCtrl: LoadingController,
-    
+    private router: Router
     ) { }
   
   //initially display posts
@@ -59,7 +60,7 @@ export class HomePage implements OnInit {
       const startIndex = (this.currentPage - 1) * this.itemsPerPage;
       const endIndex = startIndex + this.itemsPerPage;
 
-      const newPosts = await this.createPostService.getUserPosts(
+      const newPosts = await this.createPostService.getFriendsPosts(
         startIndex,
         endIndex,
         this.currentUid
@@ -82,11 +83,11 @@ export class HomePage implements OnInit {
 
         // Append the new posts to the existing userPosts array.
         this.userPosts = this.userPosts.concat(newPosts);
-        this.loadUsernamesForUserPosts(newPosts);
-        this.loadImagesForUserPosts(newPosts);
+        this.loadUsernamesForFriendsPosts(newPosts);
+        this.loadImagesForFriendsPosts(newPosts);
         this.currentPage++;
 
-        console.log('userpostslength: ' + this.userPosts.length)
+        console.log('friendspostslength: ' + this.userPosts.length)
 
         if (event) {
           event.target.complete();
@@ -96,6 +97,7 @@ export class HomePage implements OnInit {
         if (this.infiniteScroll) {
           this.infiniteScroll.disabled = true; // Disable Infinite Scroll when no new posts are loaded
         }
+        loading.dismiss();
       }
     } catch (error) {
       console.error(error);
@@ -104,22 +106,25 @@ export class HomePage implements OnInit {
     }
   }
 
-  
-  
-  async loadImagesForUserPosts(posts: Post[]) {
+  async loadImagesForFriendsPosts(posts: Post[]) {
     //this.postImages = []; // Clear the postImages array for the current page.
     for (const post of posts) {
       const postId = post.id;
-      const images = await this.createPostService.getPostImages(postId);
+      const images = await this.createPostService.getPostImages(postId, post.uid);
       this.postImages = this.postImages.concat(images);
     }
   }
 
-  async loadUsernamesForUserPosts(posts: Post[]) {
+  async loadUsernamesForFriendsPosts(posts: Post[]) {
     for (const post of posts) {
       this.usernames[post.uid] = this.userService.getUserById(post.uid).pipe(
         map((user) => user.username)
       );
     }
+  }
+
+  
+  redirectToFriendsPage(){
+    this.router.navigateByUrl('/friends', {replaceUrl: true});
   }
 }

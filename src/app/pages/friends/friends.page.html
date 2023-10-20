@@ -28,7 +28,7 @@
     <ion-item *ngIf="friendRequests.length === 0">
       <ion-label>No new friend requests</ion-label>
     </ion-item>
-    <ion-card *ngFor="let request of friendRequests">
+    <ion-card *ngFor="let request of friendRequests async">
       <ion-item>
         <ion-label>{{ request.date | date }}</ion-label>
       </ion-item>
