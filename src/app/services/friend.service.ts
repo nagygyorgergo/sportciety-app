@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { FriendRequest } from '../models/friend-request.model';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { User } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class FriendRequestService {
+export class FriendService {
 
   constructor(
     private firestore: AngularFirestore
@@ -50,6 +50,16 @@ export class FriendRequestService {
       console.error('Error checking existing request:', error);
       return false; // Return false in case of an error
     }
+  }
+
+  //get friend data by their uid
+  getFriendByUid(uid: string){
+    return this.firestore
+      .collection<User>('users', ref => ref.where('uid', '==', uid))
+      .valueChanges({ idField: 'uid' })
+      .pipe(
+        map(users => users[0])
+      );
   }
 
   //Delete friend request where reciever is the logged in user and sender is the one that sent the request

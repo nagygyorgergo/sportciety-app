@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Camera, CameraResultType, CameraSource, Photo } from '@capacitor/camera';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { Post } from 'src/app/models/post.model';
-import { CreatePostService } from 'src/app/services/create-post.service';
+import {PostService } from 'src/app/services/post.service';
 
 @Component({
   selector: 'app-create-post',
@@ -23,7 +23,7 @@ export class CreatePostPage implements OnInit {
   constructor(
     private loadingController: LoadingController,
     private alertController: AlertController,
-    private createPostService: CreatePostService,
+    private postService: PostService,
     private afAuth: AngularFireAuth,
     private router: Router
   ) { }
@@ -45,7 +45,7 @@ export class CreatePostPage implements OnInit {
   
   async createPost() {
     try {
-      const postId = await this.createPostService.createPost(this.postText);
+      const postId = await this.postService.createPost(this.postText);
       
       if (postId) {
         console.log('Post created with ID: ' + postId);
@@ -83,7 +83,7 @@ export class CreatePostPage implements OnInit {
     if(image){
       const loading = await this.loadingController.create();
       await loading.present;
-      const result = await this.createPostService.uploadImage(image, this.createdPostId);
+      const result = await this.postService.uploadImage(image, this.createdPostId);
       loading.dismiss();
 
       if(!result){

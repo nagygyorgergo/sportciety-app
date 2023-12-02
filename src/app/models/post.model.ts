@@ -1,6 +1,6 @@
 export interface Post {
     id: string;
-    uid: string; //cratur user's uid
+    uid: string; //crator user's uid
     text: string;
     createdAt: number;
 }

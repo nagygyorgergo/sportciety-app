@@ -3,12 +3,13 @@ import { Component, OnInit } from '@angular/core';
 import { user } from '@angular/fire/auth';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { DocumentData } from '@angular/fire/compat/firestore';
+import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { combineLatest } from 'rxjs';
 import { FriendRequest } from 'src/app/models/friend-request.model';
 import { User } from 'src/app/models/user.model';
 import { AvatarService } from 'src/app/services/avatar.service';
-import { FriendRequestService } from 'src/app/services/friend-request.service';
+import { FriendService } from 'src/app/services/friend.service';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -38,9 +39,10 @@ export class FriendsPage implements OnInit {
   constructor(
     private userService: UserService,
     private avatarService: AvatarService,
-    private friendRequestService: FriendRequestService,
+    private friendService: FriendService,
     private afAuth: AngularFireAuth,
     private alertController: AlertController,
+    private router: Router,
   ) { }
 
   ngOnInit() {
@@ -68,7 +70,7 @@ export class FriendsPage implements OnInit {
   }
 
   searchUser(searchTerm: string) {
-    if (!searchTerm) {
+    if (!searchTerm ||searchTerm === '') {
       this.resultUsers = [];
       this.results = []; // Clear the results array
       console.log(this.searchTerm);
@@ -77,7 +79,7 @@ export class FriendsPage implements OnInit {
   
     this.userService.getUserByUsername(searchTerm).subscribe((users: User[]) => {
       this.resultUsers = users;
-
+  
       console.log(this.resultUsers);
   
       // Create an array of observables to fetch image URLs
@@ -85,16 +87,20 @@ export class FriendsPage implements OnInit {
         this.avatarService.getImageURL(user.uid)
       );
   
-      combineLatest(observables).
-        subscribe((data: any[]) => {
-          this.results = data.map((item, index) => ({
-            imageUrl: item['imageUrl'] || '../../assets/default-profile-picture.png',
-            username: this.resultUsers[index].username,
-            uid: this.resultUsers[index].uid
-          }));
+      combineLatest(observables)
+        .subscribe((data: any[]) => {
+          // Check if this.resultUsers is an array before mapping
+          if (Array.isArray(this.resultUsers)) {
+            this.results = data.map((item, index) => ({
+              imageUrl: item['imageUrl'] || '../../assets/default-profile-picture.png',
+              username: this.resultUsers[index]?.username || 'Unknown', // Use a default value if username is undefined
+              uid: this.resultUsers[index]?.uid || 'Unknown' // Use a default value if uid is undefined
+            }));
+          }
         });
     });
   }
+  
   
   //Function for ion-searchbar's onClear action
   clearSearchTerm(){
@@ -106,7 +112,7 @@ export class FriendsPage implements OnInit {
   async sendFriendRequest(receiverUserUid: string) {
     try {
       // Check if a friend request with the same sender and receiver already exists
-      const existingRequest = await this.friendRequestService.checkExistingRequest(
+      const existingRequest = await this.friendService.checkExistingRequest(
         this.currentUserUid,
         receiverUserUid
         );
@@ -124,7 +130,7 @@ export class FriendsPage implements OnInit {
       } else {
         
         // If no existing request is found, proceed to send the friend request
-       await this.friendRequestService.addFriendRequest(
+       await this.friendService.addFriendRequest(
           this.currentUserUid,
           this.currentUserUsername,
           receiverUserUid,
@@ -152,7 +158,7 @@ export class FriendsPage implements OnInit {
 
   //list current user's friend requests
   listFriendRequests(){
-    this.friendRequestService.listFriendRequests(this.currentUserUid)
+    this.friendService.listFriendRequests(this.currentUserUid)
       .subscribe((friendRequests: FriendRequest[]) => {
         this.friendRequests = friendRequests;
       });
@@ -166,7 +172,7 @@ export class FriendsPage implements OnInit {
         message: 'You rejcted the friend request',
         buttons: ['OK'],
       });
-      this.friendRequestService.deleteFriendRequest(this.currentUserUid, senderUserUid);
+      this.friendService.deleteFriendRequest(this.currentUserUid, senderUserUid);
       await alert.present();
     }
     else{
@@ -175,15 +181,15 @@ export class FriendsPage implements OnInit {
         message: 'You are now friends',
         buttons: ['OK'],
       });
-      this.friendRequestService.addFriendToUser(this.currentUserUid, senderUserUid);
-      this.friendRequestService.deleteFriendRequest(this.currentUserUid, senderUserUid);
+      this.friendService.addFriendToUser(this.currentUserUid, senderUserUid);
+      this.friendService.deleteFriendRequest(this.currentUserUid, senderUserUid);
       await alert.present();
     }
   }
 
   //list users that are already friends
   listFriends(){
-    this.friendRequestService.listFriends(this.currentUserUid).subscribe((friendsData: User[]) => {
+    this.friendService.listFriends(this.currentUserUid).subscribe((friendsData: User[]) => {
       // Populate the friends array with the retrieved data
       this.friends = friendsData;
     });
@@ -195,6 +201,11 @@ export class FriendsPage implements OnInit {
     return this.friends.some(friend => friend.uid === uid);
   }
 
+  //Redirect user to the selected friend's profile
+  redirectToFriendProfile(friendUid: string) {
+    this.router.navigate(['/friend-profile', friendUid]);
+  }
+
   async deleteFriend(friendUid: string){
     const alert = await this.alertController.create({
       header: 'Delete friend',
@@ -202,7 +213,7 @@ export class FriendsPage implements OnInit {
       buttons: ['OK'],
     });
     console.log('Deleted: ' + friendUid);
-    this.friendRequestService.deleteFriend(this.currentUserUid, friendUid);
+    this.friendService.deleteFriend(this.currentUserUid, friendUid);
     await alert.present();
   }
   

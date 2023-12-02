@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { FriendRequestService } from './friend-request.service';
+import { FriendService } from './friend.service';
 
-describe('FriendRequestService', () => {
-  let service: FriendRequestService;
+describe('FriendService', () => {
+  let service: FriendService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(FriendRequestService);
+    service = TestBed.inject(FriendService);
   });
 
   it('should be created', () => {

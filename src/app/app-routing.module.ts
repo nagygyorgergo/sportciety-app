@@ -56,8 +56,12 @@ const routes: Routes = [
     loadChildren: () => import('./pages/create-post/create-post.module').then( m => m.CreatePostPageModule),
     ...canActivate(redirectUnauthorizedToLogin)
   },
-
-
+  {
+    path: 'friend-profile/:friendUid',
+    loadChildren: () => import('./pages/friend-profile/friend-profile.module').then( m => m.FriendProfilePageModule),
+    ...canActivate(redirectUnauthorizedToLogin)
+  },
+ 
 
 
 ];

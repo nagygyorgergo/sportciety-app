@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { IonInfiniteScroll, LoadingController } from '@ionic/angular';
 import { Observable, map } from 'rxjs';
 import { Post } from 'src/app/models/post.model';
-import { CreatePostService } from 'src/app/services/create-post.service';
+import { PostService } from 'src/app/services/post.service';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -27,7 +27,7 @@ export class HomePage implements OnInit {
   @ViewChild(IonInfiniteScroll) infiniteScroll!: IonInfiniteScroll;
 
   constructor(
-    private createPostService: CreatePostService,
+    private postService: PostService,
     private userService: UserService,
     private afAuth: AngularFireAuth,
     private loadingCtrl: LoadingController,
@@ -60,7 +60,7 @@ export class HomePage implements OnInit {
       const startIndex = (this.currentPage - 1) * this.itemsPerPage;
       const endIndex = startIndex + this.itemsPerPage;
 
-      const newPosts = await this.createPostService.getFriendsPosts(
+      const newPosts = await this.postService.getFriendsPosts(
         startIndex,
         endIndex,
         this.currentUid
@@ -110,7 +110,7 @@ export class HomePage implements OnInit {
     //this.postImages = []; // Clear the postImages array for the current page.
     for (const post of posts) {
       const postId = post.id;
-      const images = await this.createPostService.getPostImages(postId, post.uid);
+      const images = await this.postService.getPostImages(postId, post.uid);
       this.postImages = this.postImages.concat(images);
     }
   }

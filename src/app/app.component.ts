@@ -15,7 +15,7 @@ export class AppComponent implements OnInit{
     { title: 'Profile', url: 'profile', icon: 'person' },
     { title: 'Plan new training', url: 'plan-training', icon: 'barbell' },
     { title: 'View my trainings', url: 'display-my-trainings', icon: 'archive' },
-    { title: 'Trash', url: '/folder/trash', icon: 'trash' },
+    /* { title: 'Trash', url: '/folder/trash', icon: 'trash' }, */
   ];
   
   @ViewChild('menu', { static: true }) menu: IonMenu | any;

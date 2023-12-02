@@ -7,7 +7,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { UserService } from '../../services/user.service';
 import { Post } from 'src/app/models/post.model';
 import { Observable, map } from 'rxjs';
-import { CreatePostService } from 'src/app/services/create-post.service';
+import { PostService } from 'src/app/services/post.service';
 
 @Component({
   selector: 'app-profile',
@@ -41,8 +41,12 @@ export class ProfilePage implements OnInit {
     private router: Router,
     private loadingController: LoadingController,
     private alertController: AlertController,
-    private createPostService: CreatePostService,
+    private postService: PostService,
   ){
+   
+  }
+
+  ngOnInit(){
     this.avatarService.getUserProfile()?.subscribe((data)=>{
       this.profile = data;
       this.imageUrl = data['imageUrl'] || '../../assets/default-profile-picture.png';
@@ -65,9 +69,6 @@ export class ProfilePage implements OnInit {
         this.loadNextPage();
       }  
     }); 
-  }
-
-  ngOnInit(){
   }
 
   //Method for alert displaying
@@ -126,7 +127,7 @@ export class ProfilePage implements OnInit {
       const startIndex = (this.currentPage - 1) * this.itemsPerPage;
       const endIndex = startIndex + this.itemsPerPage;
 
-      const newPosts = await this.createPostService.getUserPosts(
+      const newPosts = await this.postService.getUserPosts(
         startIndex,
         endIndex,
         this.uid
@@ -176,7 +177,7 @@ export class ProfilePage implements OnInit {
     //this.postImages = []; // Clear the postImages array for the current page.
     for (const post of posts) {
       const postId = post.id;
-      const images = await this.createPostService.getPostImages(postId, this.uid);
+      const images = await this.postService.getPostImages(postId, this.uid);
       this.postImages = this.postImages.concat(images);
     }
   }
@@ -203,7 +204,7 @@ export class ProfilePage implements OnInit {
           text: 'Delete',
           handler: async () => {
             try {
-              const isDeleted = await this.createPostService.deletePost(postId, this.uid);
+              const isDeleted = await this.postService.deletePost(postId, this.uid);
 
               if (isDeleted) {
                 // Remove the deleted post from the userPosts array

@@ -12,7 +12,7 @@ import { deleteObject } from 'firebase/storage';
 @Injectable({
   providedIn: 'root'
 })
-export class CreatePostService {
+export class PostService {
   
   constructor(
     private auth: Auth,

@@ -49,6 +49,7 @@
       <ion-item>
         <img class="profile-picture" slot="start" *ngIf="friend.imageUrl;" [src]="friend.imageUrl">
         <ion-label>{{ friend.username }}</ion-label>
+        <ion-button slot="end" (click)="redirectToFriendProfile(friend.uid)">View profile</ion-button>
         <ion-button slot="end" (click)="deleteFriend(friend.uid)">Delete friend</ion-button>
       </ion-item>
      </ion-card>
