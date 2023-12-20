@@ -5,7 +5,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { DocumentData } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
-import { combineLatest } from 'rxjs';
+import { Subscription, combineLatest } from 'rxjs';
 import { FriendRequest } from 'src/app/models/friend-request.model';
 import { User } from 'src/app/models/user.model';
 import { AvatarService } from 'src/app/services/avatar.service';
@@ -36,6 +36,15 @@ export class FriendsPage implements OnInit {
   // Array to hold the friends' user data and listing friend users
   friends: User[] = []; 
 
+  //subscribtion variable
+  private afAuthSubscribtion: Subscription | null = null;
+  private avatarServiceSubscribtion: Subscription | null | undefined = null;
+  private userServiceSubscribtion: Subscription | null = null;
+  private friendRequestSubscribtion: Subscription | null = null;
+  private friendsSubscribtion: Subscription | null = null;
+  private combineLatestSubscription: Subscription | null = null;
+  
+
   constructor(
     private userService: UserService,
     private avatarService: AvatarService,
@@ -47,11 +56,11 @@ export class FriendsPage implements OnInit {
 
   ngOnInit() {
     //set currently logged in user's uid
-    this.afAuth.authState.subscribe(user => {
+    this.afAuthSubscribtion = this.afAuth.authState.subscribe(user => {
       if (user) {
         this.currentUserUid = user.uid;
 
-        this.userService.getUserById(this.currentUserUid).subscribe(user => {
+        this.userServiceSubscribtion = this.userService.getUserById(this.currentUserUid).subscribe(user => {
           this.currentUserUsername = user.username;
         });
 
@@ -61,12 +70,34 @@ export class FriendsPage implements OnInit {
         // List friends initially
         this.listFriends();
 
-        this.avatarService.getUserProfile()?.subscribe((data)=>{
+        this.avatarServiceSubscribtion = this.avatarService.getUserProfile()?.subscribe((data)=>{
           this.currentUserImageUrl = data['imageUrl'] || '../../assets/default-profile-picture.png';
           //console.log(this.profile);
         });
       }
     });
+  }
+
+  //Free memory
+  ngOnDestroy(): void{
+    if(this.afAuthSubscribtion){
+      this.afAuthSubscribtion.unsubscribe();
+    }
+    if(this.avatarServiceSubscribtion){
+      this.avatarServiceSubscribtion.unsubscribe();
+    }
+    if(this.userServiceSubscribtion){
+      this.userServiceSubscribtion.unsubscribe();
+    }
+    if(this.friendRequestSubscribtion){
+      this.friendRequestSubscribtion.unsubscribe();
+    }
+    if(this.friendsSubscribtion){
+      this.friendsSubscribtion?.unsubscribe();
+    }
+    if(this.combineLatestSubscription){
+      this.combineLatestSubscription.unsubscribe();
+    }
   }
 
   searchUser(searchTerm: string) {
@@ -77,7 +108,7 @@ export class FriendsPage implements OnInit {
       return;
     }
   
-    this.userService.getUserByUsername(searchTerm).subscribe((users: User[]) => {
+    this.userServiceSubscribtion = this.userService.getUserByUsername(searchTerm).subscribe((users: User[]) => {
       this.resultUsers = users;
   
       console.log(this.resultUsers);
@@ -87,7 +118,7 @@ export class FriendsPage implements OnInit {
         this.avatarService.getImageURL(user.uid)
       );
   
-      combineLatest(observables)
+      this.combineLatestSubscription = combineLatest(observables)
         .subscribe((data: any[]) => {
           // Check if this.resultUsers is an array before mapping
           if (Array.isArray(this.resultUsers)) {
@@ -158,7 +189,7 @@ export class FriendsPage implements OnInit {
 
   //list current user's friend requests
   listFriendRequests(){
-    this.friendService.listFriendRequests(this.currentUserUid)
+    this.friendRequestSubscribtion = this.friendService.listFriendRequests(this.currentUserUid)
       .subscribe((friendRequests: FriendRequest[]) => {
         this.friendRequests = friendRequests;
       });
@@ -189,7 +220,7 @@ export class FriendsPage implements OnInit {
 
   //list users that are already friends
   listFriends(){
-    this.friendService.listFriends(this.currentUserUid).subscribe((friendsData: User[]) => {
+    this.friendsSubscribtion =  this.friendService.listFriends(this.currentUserUid).subscribe((friendsData: User[]) => {
       // Populate the friends array with the retrieved data
       this.friends = friendsData;
     });

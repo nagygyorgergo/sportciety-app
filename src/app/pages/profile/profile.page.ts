@@ -6,7 +6,7 @@ import { AvatarService } from '../../services/avatar.service';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { UserService } from '../../services/user.service';
 import { Post } from 'src/app/models/post.model';
-import { Observable, map } from 'rxjs';
+import { Observable, Subscription, map } from 'rxjs';
 import { PostService } from 'src/app/services/post.service';
 
 @Component({
@@ -32,6 +32,12 @@ export class ProfilePage implements OnInit {
   isLoading = false;
   loadedAllPosts = false;
 
+  //Subscribtion variable
+  private avatarServiceSubscribtion: Subscription | null | undefined = null;
+  private afAuthSubscribtion: Subscription | null = null;
+  private usernameSubscribtion: Subscription | null = null;
+  private userBirthSubscribtion: Subscription | null = null;
+
   @ViewChild(IonInfiniteScroll) infiniteScroll!: IonInfiniteScroll;
 
   constructor(
@@ -47,28 +53,47 @@ export class ProfilePage implements OnInit {
   }
 
   ngOnInit(){
-    this.avatarService.getUserProfile()?.subscribe((data)=>{
+    this.avatarServiceSubscribtion = this.avatarService.getUserProfile()?.subscribe((data)=>{
       this.profile = data;
       this.imageUrl = data['imageUrl'] || '../../assets/default-profile-picture.png';
       console.log(this.profile);
     });
 
-    this.afAuth.authState.subscribe(user => {
+    this.afAuthSubscribtion = this.afAuth.authState.subscribe(user => {
       if (user) {
         this.email = user.email;
         this.uid = user.uid;
 
-        this.userService.getUserById(this.uid).subscribe(user => {
+        this.usernameSubscribtion = this.userService.getUserById(this.uid).subscribe(user => {
           this.username = user.username;
         });
         
-        this.userService.getUserById(this.uid).subscribe(user=>{
+        this.userBirthSubscribtion = this.userService.getUserById(this.uid).subscribe(user=>{
           this.dateOfBirth = user.dateOfBirth;
         });
 
         this.loadNextPage();
       }  
     }); 
+  }
+
+  //Free memory
+  ngOnDestroy(): void{
+    if(this.avatarServiceSubscribtion){
+      this.avatarServiceSubscribtion.unsubscribe();
+    }
+    if(this.afAuthSubscribtion){
+      this.afAuthSubscribtion.unsubscribe();
+    }
+    if(this.usernameSubscribtion){
+      this.usernameSubscribtion.unsubscribe();
+    }
+    if(this.userBirthSubscribtion){
+      this.userBirthSubscribtion.unsubscribe();
+    }
+    if (this.infiniteScroll) {
+      this.infiniteScroll.disabled = true;
+    }
   }
 
   //Method for alert displaying
@@ -92,7 +117,7 @@ export class ProfilePage implements OnInit {
 
     if(image){
       const loading = await this.loadingController.create();
-      await loading.present;
+      await loading.present();
       const result = await this.avatarService.uploadImage(image);
       loading.dismiss();
 

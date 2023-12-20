@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
 import { IonInfiniteScroll, LoadingController } from '@ionic/angular';
-import { Observable, map } from 'rxjs';
+import { Observable, Subscription, map } from 'rxjs';
 import { Post } from 'src/app/models/post.model';
 import { PostService } from 'src/app/services/post.service';
 import { UserService } from 'src/app/services/user.service';
@@ -24,6 +24,10 @@ export class HomePage implements OnInit {
   isLoading = false;
   loadedAllPosts = false;
 
+  
+  //subscribtion variable
+  private afAuthSubscribtion: Subscription | null = null;
+
   @ViewChild(IonInfiniteScroll) infiniteScroll!: IonInfiniteScroll;
 
   constructor(
@@ -35,13 +39,20 @@ export class HomePage implements OnInit {
     ) { }
   
   //initially display posts
+  //No need to unsubscribe bc. of async pype in view.
   async ngOnInit() {
-    this.afAuth.authState.subscribe(user => {
+    this.afAuthSubscribtion = this.afAuth.authState.subscribe(user => {
       if (user) {
         this.currentUid = user.uid;
         this.loadNextPage();
       }  
     });
+  }
+
+  ngOnDestroy(): void{
+    if(this.afAuthSubscribtion){
+      this.afAuthSubscribtion.unsubscribe();
+    }
   }
 
   async loadNextPage(event?: any) {

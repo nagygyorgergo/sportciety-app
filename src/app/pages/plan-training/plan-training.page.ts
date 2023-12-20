@@ -5,6 +5,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { LoadingController, AlertController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-plan-training',
@@ -16,6 +17,10 @@ export class PlanTrainingPage implements OnInit {
   details!: FormGroup | any;
   nameForm!: FormGroup | any;
   addedExercises: Exercise[] = [];
+
+   //Subscribtion variable
+   private afAuthSubscribtion: Subscription | null = null;
+
 
   constructor(
     private trainingService: TrainingService,
@@ -43,6 +48,14 @@ export class PlanTrainingPage implements OnInit {
       rounds: ['', [Validators.required]],
       reps: ['', [Validators.required]],
     });
+  }
+
+  
+  //Free memory
+  ngOnDestroy(): void{
+    if(this.afAuthSubscribtion){
+      this.afAuthSubscribtion?.unsubscribe();
+    }
   }
 
   addExercise(){

@@ -3,6 +3,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
 import { Camera, CameraResultType, CameraSource, Photo } from '@capacitor/camera';
 import { AlertController, LoadingController } from '@ionic/angular';
+import { Subscription } from 'rxjs';
 import { Post } from 'src/app/models/post.model';
 import {PostService } from 'src/app/services/post.service';
 
@@ -20,6 +21,9 @@ export class CreatePostPage implements OnInit {
   image!: Photo;
   imageLocalPath = '';
 
+  //Subscribtion variable
+  private afAuthSubscribtion: Subscription | null = null;
+
   constructor(
     private loadingController: LoadingController,
     private alertController: AlertController,
@@ -29,13 +33,19 @@ export class CreatePostPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.afAuth.authState.subscribe(user => {
+    this.afAuthSubscribtion = this.afAuth.authState.subscribe(user => {
       if (user) {
         this.uid = user.uid;
         /* console.log(this.uid) */
       }  
     });
-    
+  }
+
+  //Free memory
+  ngOnDestroy(): void{
+    if(this.afAuthSubscribtion){
+      this.afAuthSubscribtion?.unsubscribe();
+    }
   }
 
   // Check if the textarea is empty or contains only whitespace

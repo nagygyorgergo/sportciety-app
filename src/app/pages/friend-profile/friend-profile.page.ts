@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { FriendService } from 'src/app/services/friend.service';
 
 @Component({
@@ -13,6 +14,9 @@ export class FriendProfilePage implements OnInit {
   friendUsername: string;
   friendEmail: string;
   friendDateOfBirth: number;
+
+  //subscribtion variable
+  private friendServiceSubscription: Subscription | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -29,13 +33,20 @@ export class FriendProfilePage implements OnInit {
     console.log(this.friendUid);
     
     if(this.friendUid){
-      this.friendService.getFriendByUid(this.friendUid).subscribe(user => {
+      this.friendServiceSubscription = this.friendService.getFriendByUid(this.friendUid).subscribe(user => {
         this.friendUsername = user.username;
         this.friendEmail = user.email;
         this.friendDateOfBirth = user.dateOfBirth;
       });
     }
     
+  }
+
+  //Free memory
+  ngOnDestroy(): void{
+    if(this.friendServiceSubscription){
+      this.friendServiceSubscription.unsubscribe();
+    }
   }
 
   getFriendUidFromUrl(): string | null {

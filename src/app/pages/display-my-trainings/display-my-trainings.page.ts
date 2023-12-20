@@ -4,6 +4,7 @@ import { TrainingService } from '../../services/training-plan.service';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { AlertController } from '@ionic/angular';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-display-my-trainings',
@@ -52,6 +53,10 @@ export class DisplayMyTrainingsPage implements OnInit {
   myTrainingPlans: Training[] = [];
   filteredTrainingPlans: Training[] = [];
 
+  //Subscribtion variable
+  private afAuthSubscribtion: Subscription | null = null;
+  private trainingPlansSubscription: Subscription | null = null;
+
   constructor(
     private trainingService: TrainingService,
     private afAuth: AngularFireAuth,
@@ -59,15 +64,25 @@ export class DisplayMyTrainingsPage implements OnInit {
     ) {}
 
   ngOnInit() {
-    this.afAuth.authState.subscribe(user => {
+    this.afAuthSubscribtion = this.afAuth.authState.subscribe(user => {
       if (user) {
         const uid = user.uid;
-        this.trainingService.getMyTrainings(uid).subscribe(trainings => {
+        this.trainingPlansSubscription = this.trainingService.getMyTrainings(uid).subscribe(trainings => {
           this.myTrainingPlans = trainings;
           this.filterItems(this.searchTerm);
         });
       }
     });
+  }
+
+  //Free memory
+  ngOnDestroy(): void{
+    if(this.afAuthSubscribtion){
+      this.afAuthSubscribtion?.unsubscribe();
+    }
+    if(this.trainingPlansSubscription){
+      this.trainingPlansSubscription.unsubscribe();
+    }
   }
 
   //Filter function for searchban
