@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
-import { User } from '../../models/user.model';
+import { Userdata } from '../../models/user.model';
 
 @Component({
   selector: 'app-signup',
@@ -13,7 +13,7 @@ import { User } from '../../models/user.model';
 })
 export class SignupPage implements OnInit {
   credentials: FormGroup|any;
-  newUser!: User;
+  newUser!: Userdata;
 
   constructor(
     private fb: FormBuilder,
@@ -30,10 +30,18 @@ export class SignupPage implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       date: ['2000-01-01', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(8)]],
+      confirmPassword: ['', [Validators.required]],
       imageUrl: '../../assets/default-profile-picture.png'
-    });
+    }, { validators: this.passwordMatchValidator });
   }
-
+  
+  passwordMatchValidator(group: FormGroup) {
+    const password = group.get('password')?.value;
+    const confirmPassword = group.get('confirmPassword')?.value;
+  
+    return password === confirmPassword ? null : { mismatch: true };
+  }
+  
   getUsername(){
     return this.credentials.get('username');
   }
@@ -58,7 +66,7 @@ export class SignupPage implements OnInit {
         const cred = await this.authService.register(email, password);
   
         if (cred) {
-          const user: User = {
+          const user: Userdata = {
             uid: cred.uid,
             email: email,
             username: this.getUsername()?.value,

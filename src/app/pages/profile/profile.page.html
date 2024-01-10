@@ -55,6 +55,19 @@
         {{ post.text }}
         <ion-item><ion-button slot="end" (click)="deletePost(post.id)" >Delete</ion-button></ion-item>
       </ion-card-content>
+
+      <ion-icon
+        name="heart"
+        size="large"
+        [style.position]="'absolute'"
+        [style.bottom]="'125px'"
+        [style.right]="'8px'"
+        [style.cursor]="'pointer'"
+        [style.color]="'red'"
+        (click)="showLikers(post.id)"
+      ></ion-icon>
+
+      <span style="position: absolute; bottom: 130px; right: 50px;">{{ post.likeCount }}</span>
   
     </ion-card>
   </ion-list>

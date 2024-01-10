@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { Subscription, combineLatest } from 'rxjs';
 import { FriendRequest } from 'src/app/models/friend-request.model';
-import { User } from 'src/app/models/user.model';
+import { Userdata } from 'src/app/models/user.model';
 import { AvatarService } from 'src/app/services/avatar.service';
 import { FriendService } from 'src/app/services/friend.service';
 import { UserService } from 'src/app/services/user.service';
@@ -22,7 +22,7 @@ export class FriendsPage implements OnInit {
 
   //Variables for search
   searchTerm: string = '';
-  resultUsers: User[] = [];
+  resultUsers: Userdata[] = [];
   imageURL!: DocumentData;
   results!: { imageUrl: string, username: string, uid: string }[];
 
@@ -34,7 +34,7 @@ export class FriendsPage implements OnInit {
   currentUserImageUrl!: string;
 
   // Array to hold the friends' user data and listing friend users
-  friends: User[] = []; 
+  friends: Userdata[] = []; 
 
   //subscribtion variable
   private afAuthSubscribtion: Subscription | null = null;
@@ -108,13 +108,13 @@ export class FriendsPage implements OnInit {
       return;
     }
   
-    this.userServiceSubscribtion = this.userService.getUserByUsername(searchTerm).subscribe((users: User[]) => {
+    this.userServiceSubscribtion = this.userService.getUserByUsername(searchTerm).subscribe((users: Userdata[]) => {
       this.resultUsers = users;
   
       console.log(this.resultUsers);
   
       // Create an array of observables to fetch image URLs
-      const observables = this.resultUsers.map((user: User) =>
+      const observables = this.resultUsers.map((user: Userdata) =>
         this.avatarService.getImageURL(user.uid)
       );
   
@@ -220,7 +220,7 @@ export class FriendsPage implements OnInit {
 
   //list users that are already friends
   listFriends(){
-    this.friendsSubscribtion =  this.friendService.listFriends(this.currentUserUid).subscribe((friendsData: User[]) => {
+    this.friendsSubscribtion =  this.friendService.listFriends(this.currentUserUid).subscribe((friendsData: Userdata[]) => {
       // Populate the friends array with the retrieved data
       this.friends = friendsData;
     });

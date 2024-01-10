@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
-import { IonInfiniteScroll, LoadingController } from '@ionic/angular';
+import { AlertController, IonInfiniteScroll, LoadingController } from '@ionic/angular';
+import { posix } from 'path';
 import { Observable, Subscription, map } from 'rxjs';
 import { Post } from 'src/app/models/post.model';
 import { PostService } from 'src/app/services/post.service';
@@ -13,13 +14,13 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./home.page.scss'],
 })
 export class HomePage implements OnInit {
-
+  currentUsername: string = '';
   currentUid: string = '';
   userPosts: Post[] = [];
   postImages: string[] = [];
   usernames: { [userId: string]: Observable<string> } = {}; //this is for storing post creator's usernames
 
-  itemsPerPage = 5;
+  itemsPerPage = 10;
   currentPage = 1;
   isLoading = false;
   loadedAllPosts = false;
@@ -27,7 +28,8 @@ export class HomePage implements OnInit {
   
   //subscribtion variable
   private afAuthSubscribtion: Subscription | null = null;
-
+  /* private usernameSubscribtion: Subscription | null = null;
+ */
   @ViewChild(IonInfiniteScroll) infiniteScroll!: IonInfiniteScroll;
 
   constructor(
@@ -35,7 +37,8 @@ export class HomePage implements OnInit {
     private userService: UserService,
     private afAuth: AngularFireAuth,
     private loadingCtrl: LoadingController,
-    private router: Router
+    private router: Router,
+    private alertController: AlertController
     ) { }
   
   //initially display posts
@@ -44,15 +47,24 @@ export class HomePage implements OnInit {
     this.afAuthSubscribtion = this.afAuth.authState.subscribe(user => {
       if (user) {
         this.currentUid = user.uid;
+
+       /*  this.usernameSubscribtion = this.userService.getUserById(this.currentUid).subscribe(user => {
+          this.currentUsername = user.username;
+        }); */
+
         this.loadNextPage();
-      }  
+      } 
     });
+
   }
 
   ngOnDestroy(): void{
     if(this.afAuthSubscribtion){
       this.afAuthSubscribtion.unsubscribe();
     }
+    /* if(this.usernameSubscribtion){
+      this.usernameSubscribtion.unsubscribe();
+    } */
   }
 
   async loadNextPage(event?: any) {
@@ -134,6 +146,48 @@ export class HomePage implements OnInit {
     }
   }
 
+  //Method for alert displaying
+  async alertPopup(header: string, message: string){
+    const alert = await this.alertController.create({
+      header: header,
+      message: message,
+      buttons: ['OK']
+    });
+    await alert.present();
+  }
+
+  //like post method
+  async likePost(postId: string) {
+    try {
+      //Finding current post's index
+      const postIndex = this.userPosts.findIndex(post => post.id === postId);
+      console.log(postIndex)
+
+      if(postIndex !== -1){
+        const currentPost = this.userPosts[postIndex];
+
+        // Check if the current user has already liked the post
+        const likedByCurrentUser = currentPost.likerUids.includes(this.currentUid);
+
+        if (!likedByCurrentUser) {
+          currentPost.likerUids.push(this.currentUid);
+          currentPost.likeCount++;
+          await this.postService.likePost(postId, this.currentUid);
+          console.log("Post liked successfully!");
+        }
+        else{
+          this.alertPopup('Already liked this post', 'sory :(');
+        }
+        // Update the posts array
+        this.userPosts[postIndex] = currentPost;
+      }
+      
+      console.log("postId: " + postId + '\n' + 'uid: ' + this.currentUid);
+    } catch (error) {
+      console.error("Error liking post:", error);
+      // Handle the error as needed, e.g., display a user-friendly message
+    }
+  }
   
   redirectToFriendsPage(){
     this.router.navigateByUrl('/friends', {replaceUrl: true});

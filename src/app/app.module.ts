@@ -20,10 +20,11 @@ import {AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { LikerPopoverComponent } from './components/liker-popover/liker-popover.component';
 
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, LikerPopoverComponent],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,
   HttpClientModule,
   ReactiveFormsModule,

@@ -8,6 +8,8 @@ import { UserService } from '../../services/user.service';
 import { Post } from 'src/app/models/post.model';
 import { Observable, Subscription, map } from 'rxjs';
 import { PostService } from 'src/app/services/post.service';
+import { PopoverController } from '@ionic/angular';
+import { LikerPopoverComponent } from 'src/app/components/liker-popover/liker-popover.component';
 
 @Component({
   selector: 'app-profile',
@@ -22,10 +24,14 @@ export class ProfilePage implements OnInit {
   uid!: string;
   imageUrl: string = '../../assets/default-profile-picture.png';
 
+  //popover window variable
+  isPopoverOpen: boolean = false;
+
   //Variables for post listing
   userPosts: Post[] = [];
   postImages: string[] = [];
   usernames: { [userId: string]: Observable<string> } = {}; //this is for storing post creator's usernames
+  postLikerNames: string[] = [];
 
   itemsPerPage = 3;
   currentPage = 1;
@@ -48,6 +54,7 @@ export class ProfilePage implements OnInit {
     private loadingController: LoadingController,
     private alertController: AlertController,
     private postService: PostService,
+    public popoverController: PopoverController
   ){
    
   }
@@ -249,4 +256,27 @@ export class ProfilePage implements OnInit {
     await alert.present();
   }
 
+  async showLikers(postId: string) {
+    try {
+      const likerNames = await this.postService.getLikerNamesByPostId(postId);
+      if (likerNames) {
+        const popover = await this.popoverController.create({
+          component: LikerPopoverComponent, // Create a separate component for your popover
+          componentProps: {
+            likerUids: likerNames
+          },
+          event: event,
+          translucent: true
+        });
+        
+        await popover.present();
+      } else {
+        console.warn('Error getting liker user names');
+        this.alertPopup('Problem occurred', 'Can\'t load likers or no one liked yet.');
+      }
+    } catch (error) {
+      console.error('An error occurred:', error);
+    }
+  }
+  
 }

@@ -35,6 +35,12 @@
         <span *ngIf="getPassword().errors?.minlength">Must be at least 8 characters long.</span>
       </ion-note>
     </ion-item>
+    <ion-item fill="solid" class="ion-margin-bottom">
+      <ion-input type="password" placeholder="Confirm Password" formControlName="confirmPassword"></ion-input>
+      <ion-note slot="end" *ngIf="credentials.hasError('mismatch') && credentials.get('confirmPassword').touched">
+        Passwords do not match.
+      </ion-note>
+    </ion-item>
 
     <ion-button expand="full" type="submit" [disabled]="!credentials.valid">Signup</ion-button>
     <ion-button expand="full" type="button" (click)="redirectToLogin()">Login</ion-button>

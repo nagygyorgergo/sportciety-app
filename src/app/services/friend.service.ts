@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { FriendRequest } from '../models/friend-request.model';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Observable, map } from 'rxjs';
-import { User } from '../models/user.model';
+import { Userdata } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -55,7 +55,7 @@ export class FriendService {
   //get friend data by their uid
   getFriendByUid(uid: string){
     return this.firestore
-      .collection<User>('users', ref => ref.where('uid', '==', uid))
+      .collection<Userdata>('users', ref => ref.where('uid', '==', uid))
       .valueChanges({ idField: 'uid' })
       .pipe(
         map(users => users[0])
@@ -81,8 +81,8 @@ export class FriendService {
   /*accept friend request: add currentUserUid(reciever's uid) to
   the friend request sender and add friendUid(sender's uid) to reciever user*/
   async addFriendToUser(currentUserUid: string, friendUid: string): Promise<void> {
-    const userRef = this.firestore.collection<User>('users').doc(currentUserUid).ref;
-    const friendRef = this.firestore.collection<User>('users').doc(friendUid).ref;
+    const userRef = this.firestore.collection<Userdata>('users').doc(currentUserUid).ref;
+    const friendRef = this.firestore.collection<Userdata>('users').doc(friendUid).ref;
 
     return this.firestore.firestore.runTransaction(async (transaction) => {
       const userDoc = await transaction.get(userRef);
@@ -92,8 +92,8 @@ export class FriendService {
         throw new Error('User or friend document does not exist.');
       }
 
-      const userData = userDoc.data() as User;
-      const friendData = friendDoc.data() as User;
+      const userData = userDoc.data() as Userdata;
+      const friendData = friendDoc.data() as Userdata;
 
       // Initialize friendUids arrays if they're undefined
       userData.friendUids = userData.friendUids || [];
@@ -121,10 +121,10 @@ export class FriendService {
     ).valueChanges();
   }
 
-  listFriends(currentUserUid: string): Observable<User[]> {
+  listFriends(currentUserUid: string): Observable<Userdata[]> {
     // Query the users collection to get friends based on friendUids array
     return this.firestore
-      .collection<User>('users', (ref) =>
+      .collection<Userdata>('users', (ref) =>
         ref.where('friendUids', 'array-contains', currentUserUid)
       )
       .valueChanges();
@@ -132,8 +132,8 @@ export class FriendService {
 
   //Delete friend
   deleteFriend(currentUserUid: string, friendUid: string): Promise<void> {
-    const userRef = this.firestore.collection<User>('users').doc(currentUserUid).ref;
-    const friendRef = this.firestore.collection<User>('users').doc(friendUid).ref;
+    const userRef = this.firestore.collection<Userdata>('users').doc(currentUserUid).ref;
+    const friendRef = this.firestore.collection<Userdata>('users').doc(friendUid).ref;
 
     return this.firestore.firestore.runTransaction(async (transaction) => {
       const userDoc = await transaction.get(userRef);
@@ -143,8 +143,8 @@ export class FriendService {
         throw new Error('User or friend document does not exist.');
       }
 
-      const userData = userDoc.data() as User;
-      const friendData = friendDoc.data() as User;
+      const userData = userDoc.data() as Userdata;
+      const friendData = friendDoc.data() as Userdata;
 
       // Remove friendUid from the currentUser's friendUids array
       if (userData.friendUids && userData.friendUids.includes(friendUid)) {

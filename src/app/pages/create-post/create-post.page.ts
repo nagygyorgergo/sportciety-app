@@ -99,7 +99,7 @@ export class CreatePostPage implements OnInit {
       if(!result){
         const alert = await this.alertController.create({
           header: 'Upload failed',
-          message: 'Problem volt sajna',
+          message: 'Problem occured',
           buttons: ['OK']
         });
         await alert.present();

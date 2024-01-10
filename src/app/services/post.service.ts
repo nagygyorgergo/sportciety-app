@@ -8,6 +8,8 @@ import { Post } from '../models/post.model';
 import { Firestore} from '@angular/fire/firestore';
 import { query, orderBy, getDoc, doc } from "firebase/firestore";  
 import { deleteObject } from 'firebase/storage';
+import { Observable } from 'rxjs';
+import { Userdata } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +32,8 @@ export class PostService {
         uid: user.uid,
         text: text,
         createdAt: new Date().getTime(),
+        likeCount: 0,
+        likerUids: []
       };
   
       try {
@@ -180,7 +184,6 @@ export class PostService {
   }
 
   //Get user's friends' posts
-
   async getFriendsPosts(startIndex: number, endIndex: number, uid: string): Promise<Post[]> {
     if (uid) {
       try {
@@ -225,4 +228,76 @@ export class PostService {
       throw new Error('User is not defined');
     }
   }
+
+  //Like post
+  async likePost(postId: string, likerUid: string): Promise<void> {
+    try {
+      const postRef = this.angularFirestore.collection('posts').doc(postId);
+  
+      // Use get() to retrieve the document once
+      const postSnapshot = await postRef.get().toPromise();
+  
+      if (postSnapshot) {
+        const postData = postSnapshot.data() as Post;
+  
+        if (!postData.likerUids.includes(likerUid)) {
+          const updatedPostData = {
+            likeCount: postData.likeCount + 1,
+            likerUids: [...postData.likerUids, likerUid],
+            /* likerNames: [...postData.likerNames, likerName] */
+          };
+  
+          await postRef.update(updatedPostData);
+        } else {
+          console.warn('User has already liked this post.');
+        }
+      } else {
+        console.error('Post not found.');
+      }
+    } catch (error) {
+      console.error('Error liking post:', error);
+    }
+  }
+  
+
+  //Get liker users' names
+  async getLikerNamesByPostId(postId: string): Promise<string[] | null> {
+    try {
+      const postDoc = await this.angularFirestore.collection('posts').doc(postId).get().toPromise();
+
+      if (postDoc) {
+        const post = postDoc.data() as Post;
+        const likerUids = post?.likerUids || [];
+
+        // Fetch user details for liker UIDs
+        const likerNamesPromises = likerUids.map(async (likerUid) => {
+          const likerDoc = await this.angularFirestore.collection('users').doc(likerUid).get().toPromise();
+
+          if (likerDoc) {
+            const likerData = likerDoc.data() as Userdata;
+            return likerData?.username || 'Unknown User';
+          } else {
+            console.error(`User with UID ${likerUid} not found`);
+            return 'Unknown User';
+          }
+        });
+
+        // Resolve all promises to get the liker names
+        const likerNames = await Promise.all(likerNamesPromises);
+        if(likerNames.length !== 0){
+          return likerNames;
+        }
+        else{
+          return null;
+        }
+      } else {
+        console.error('Post not found');
+        return null;
+      }
+    } catch (error) {
+      console.error('Error getting liker names:', error);
+      return null;
+    }
+  }
+  
 }
