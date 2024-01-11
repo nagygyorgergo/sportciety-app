@@ -24,10 +24,15 @@
         <span *ngIf="getEmail().errors?.email">Invalid email format.</span>
       </ion-note>
     </ion-item>
-    <ion-item fill="solid" class="ion-margin-bottom">
-      <ion-label>Date of birth</ion-label>
-      <ion-datetime formControlName="date" presentation="date"></ion-datetime>
-    </ion-item>    
+    <ion-item class="ion-margin-bottom">
+      <ion-card>
+        <ion-label>Date of birth</ion-label>
+        <ion-datetime formControlName="date" presentation="date" class="ion-text-center" style="width: 100%;"></ion-datetime>
+      </ion-card>
+      
+      
+    </ion-item>
+      
     <ion-item fill="solid" class="ion-margin-bottom">
       <ion-input type="password" placeholder="Password" formControlName="password"></ion-input>
       <ion-note slot="end" *ngIf="getPassword().invalid && getPassword().touched">

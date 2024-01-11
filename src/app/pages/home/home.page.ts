@@ -102,15 +102,16 @@ export class HomePage implements OnInit {
       }
 
       if (newPosts.length > 0 && !this.loadedAllPosts) {
-        loading.dismiss();
 
         // Append the new posts to the existing userPosts array.
         this.userPosts = this.userPosts.concat(newPosts);
-        this.loadUsernamesForFriendsPosts(newPosts);
-        this.loadImagesForFriendsPosts(newPosts);
+        await this.loadUsernamesForFriendsPosts(newPosts);
+        await this.loadImagesForFriendsPosts(newPosts);
         this.currentPage++;
 
         console.log('friendspostslength: ' + this.userPosts.length)
+
+        loading.dismiss();
 
         if (event) {
           event.target.complete();

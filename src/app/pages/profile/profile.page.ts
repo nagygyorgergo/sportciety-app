@@ -261,7 +261,7 @@ export class ProfilePage implements OnInit {
       const likerNames = await this.postService.getLikerNamesByPostId(postId);
       if (likerNames) {
         const popover = await this.popoverController.create({
-          component: LikerPopoverComponent, // Create a separate component for your popover
+          component: LikerPopoverComponent,
           componentProps: {
             likerUids: likerNames
           },
