@@ -14,7 +14,6 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./home.page.scss'],
 })
 export class HomePage implements OnInit {
-  currentUsername: string = '';
   currentUid: string = '';
   userPosts: Post[] = [];
   postImages: string[] = [];
@@ -28,8 +27,7 @@ export class HomePage implements OnInit {
   
   //subscribtion variable
   private afAuthSubscribtion: Subscription | null = null;
-  /* private usernameSubscribtion: Subscription | null = null;
- */
+ 
   @ViewChild(IonInfiniteScroll) infiniteScroll!: IonInfiniteScroll;
 
   constructor(
@@ -47,11 +45,6 @@ export class HomePage implements OnInit {
     this.afAuthSubscribtion = this.afAuth.authState.subscribe(user => {
       if (user) {
         this.currentUid = user.uid;
-
-       /*  this.usernameSubscribtion = this.userService.getUserById(this.currentUid).subscribe(user => {
-          this.currentUsername = user.username;
-        }); */
-
         this.loadNextPage();
       } 
     });
@@ -62,9 +55,6 @@ export class HomePage implements OnInit {
     if(this.afAuthSubscribtion){
       this.afAuthSubscribtion.unsubscribe();
     }
-    /* if(this.usernameSubscribtion){
-      this.usernameSubscribtion.unsubscribe();
-    } */
   }
 
   async loadNextPage(event?: any) {

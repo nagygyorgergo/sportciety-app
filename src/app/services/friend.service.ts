@@ -58,7 +58,7 @@ export class FriendService {
       .collection<Userdata>('users', ref => ref.where('uid', '==', uid))
       .valueChanges({ idField: 'uid' })
       .pipe(
-        map(users => users[0])
+        map(users => (users.length > 0) ? users[0] : null)
       );
   }
 
@@ -131,36 +131,46 @@ export class FriendService {
   }
 
   //Delete friend
-  deleteFriend(currentUserUid: string, friendUid: string): Promise<void> {
+  async deleteFriend(currentUserUid: string, friendUid: string): Promise<boolean> {
     const userRef = this.firestore.collection<Userdata>('users').doc(currentUserUid).ref;
     const friendRef = this.firestore.collection<Userdata>('users').doc(friendUid).ref;
+  
+    try {
+      await this.firestore.firestore.runTransaction(async (transaction) => {
+        const userDoc = await transaction.get(userRef);
+        const friendDoc = await transaction.get(friendRef);
 
-    return this.firestore.firestore.runTransaction(async (transaction) => {
-      const userDoc = await transaction.get(userRef);
-      const friendDoc = await transaction.get(friendRef);
+        if (!userDoc.exists || !friendDoc.exists) {
+          throw new Error('User or friend document does not exist.');
+        }
 
-      if (!userDoc.exists || !friendDoc.exists) {
-        throw new Error('User or friend document does not exist.');
-      }
+        const userData = userDoc.data() as Userdata;
+        const friendData = friendDoc.data() as Userdata;
 
-      const userData = userDoc.data() as Userdata;
-      const friendData = friendDoc.data() as Userdata;
+        // Remove friendUid from the currentUser's friendUids array
+        if (userData.friendUids && userData.friendUids.includes(friendUid)) {
+          userData.friendUids = userData.friendUids.filter((uid) => uid !== friendUid);
+        }
 
-      // Remove friendUid from the currentUser's friendUids array
-      if (userData.friendUids && userData.friendUids.includes(friendUid)) {
-        userData.friendUids = userData.friendUids.filter((uid) => uid !== friendUid);
-      }
+        // Remove currentUserUid from the friend's friendUids array
+        if (friendData.friendUids && friendData.friendUids.includes(currentUserUid)) {
+          friendData.friendUids = friendData.friendUids.filter((uid_1) => uid_1 !== currentUserUid);
+        }
 
-      // Remove currentUserUid from the friend's friendUids array
-      if (friendData.friendUids && friendData.friendUids.includes(currentUserUid)) {
-        friendData.friendUids = friendData.friendUids.filter((uid) => uid !== currentUserUid);
-      }
+        // Update both user documents with the modified friendUids arrays
+        transaction.update(userRef, { friendUids: userData.friendUids });
+        transaction.update(friendRef, { friendUids: friendData.friendUids });
 
-      // Update both user documents with the modified friendUids arrays
-      transaction.update(userRef, { friendUids: userData.friendUids });
-      transaction.update(friendRef, { friendUids: friendData.friendUids });
-    });
+        // Return true if the transaction completes successfully
+        return true;
+      });
+      return true;
+    } catch (error) {
+      console.error('Transaction failed: ', error);
+      return false;
+    }
   }
+  
 
   
 }

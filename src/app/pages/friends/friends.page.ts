@@ -132,11 +132,20 @@ export class FriendsPage implements OnInit {
     });
   }
   
-  
   //Function for ion-searchbar's onClear action
   clearSearchTerm(){
     this.searchTerm='';
     this.searchUser(this.searchTerm);
+  }
+
+  //Alert window
+  async alertPopup(header: string, message: string){
+    const alert = await this.alertController.create({
+      header: header,
+      message: message,
+      buttons: ['OK']
+    });
+    await alert.present();
   }
 
   //Send friend request to user, gets parameter in friends.page.html
@@ -152,12 +161,7 @@ export class FriendsPage implements OnInit {
 
       if (existingRequest) {
         // If an existing friend request is found, notify the user
-        const alert = await this.alertController.create({
-          header: 'Friend Request Exists',
-          message: 'You have already sent a friend request to this user.',
-          buttons: ['OK'],
-        });
-        await alert.present();
+        this.alertPopup('Friend Request Exists', 'You have already sent a friend request to this user.');
       } else {
         
         // If no existing request is found, proceed to send the friend request
@@ -169,20 +173,10 @@ export class FriendsPage implements OnInit {
         );
 
         // Show a success alert
-        const alert = await this.alertController.create({
-          header: 'Friend Request Sent',
-          message: 'Your friend request has been sent successfully!',
-          buttons: ['OK'],
-        });
-        await alert.present();
+        this.alertPopup('Friend Request Sent', 'Your friend request has been sent successfully!');
       }
     } catch (error) {
-      const alert = await this.alertController.create({
-        header: 'Friend Request Error',
-        message: 'Your friend request could not be sent. An error occurred.',
-        buttons: ['OK'],
-      });
-      await alert.present();
+      this.alertPopup('Friend Request Error', 'Your friend request could not be sent. An error occurred.');
       console.error('Error sending friend request:', error);
     }
   }
@@ -198,23 +192,13 @@ export class FriendsPage implements OnInit {
   //Accept or reject firned request: 0-->reject, 1-->accept
   async changeFriendRequestStatus(value: number, senderUserUid: string){
     if(value === 0){
-      const alert = await this.alertController.create({
-        header: 'Friend Request rejected',
-        message: 'You rejcted the friend request',
-        buttons: ['OK'],
-      });
+      this.alertPopup('Friend Request rejected', 'You rejcted the friend request');
       this.friendService.deleteFriendRequest(this.currentUserUid, senderUserUid);
-      await alert.present();
     }
     else{
-      const alert = await this.alertController.create({
-        header: 'Friend Request accepted',
-        message: 'You are now friends',
-        buttons: ['OK'],
-      });
+      this.alertPopup('Friend Request accepted', 'You are now friends');
       this.friendService.addFriendToUser(this.currentUserUid, senderUserUid);
       this.friendService.deleteFriendRequest(this.currentUserUid, senderUserUid);
-      await alert.present();
     }
   }
 
@@ -237,16 +221,37 @@ export class FriendsPage implements OnInit {
     this.router.navigate(['/friend-profile', friendUid]);
   }
 
-  async deleteFriend(friendUid: string){
+  //Delete friend dialog
+  async deleteFriend(friendUid: string) {
     const alert = await this.alertController.create({
-      header: 'Delete friend',
-      message: 'Friend deleted successfully',
-      buttons: ['OK'],
+    header: 'Confirm Deletion',
+    message: `Are you sure you want to delete post?`,
+    buttons: [
+      {
+        text: 'Cancel',
+        role: 'cancel'
+      },
+      {
+        text: 'Delete',
+        handler: async () => {
+          try {
+            const isDeleted = await this.friendService.deleteFriend(this.currentUserUid, friendUid);
+
+            if (isDeleted) {
+              // Remove the deleted post from the userPosts array
+              this.alertPopup('Delete finished', 'Deleted successfully')
+              //Back to beginning of posts
+            }
+            
+          } catch (error) {
+            console.error('Error deleting post:', error);
+            this.alertPopup('Something went wrond', 'Delete failed')
+          }
+        }
+      }
+    ] 
     });
-    console.log('Deleted: ' + friendUid);
-    this.friendService.deleteFriend(this.currentUserUid, friendUid);
     await alert.present();
   }
-  
 
 }

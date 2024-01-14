@@ -60,7 +60,11 @@ const routes: Routes = [
     path: 'friend-profile/:friendUid',
     loadChildren: () => import('./pages/friend-profile/friend-profile.module').then( m => m.FriendProfilePageModule),
     ...canActivate(redirectUnauthorizedToLogin)
+  },  {
+    path: 'error',
+    loadChildren: () => import('./pages/error/error.module').then( m => m.ErrorPageModule)
   },
+
  
 
 
