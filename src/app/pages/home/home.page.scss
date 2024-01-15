@@ -1,9 +1,20 @@
-ion-content{
+/* ion-content{
     //--background: url("../../../assets/black-silouette.png") no-repeat center center / cover;
-}
+} */
 
 ion-card{
    
     
 }
 
+/* ion-tabs{
+    position: fixed;
+    bottom: 0;
+} */
+
+ion-content{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}

@@ -118,6 +118,20 @@ export class PostService {
     return null;
   }
   
+  
+  // Function to resize the image using a simple resizing algorithm
+  resizeImage(imageBuffer: Buffer, width: number, height: number): Promise<Buffer> {
+    return new Promise((resolve) => {
+      const resizedWidth = 800; // Adjust the desired width
+      const resizedHeight = (resizedWidth / width) * height;
+  
+      // Use a simple resizing algorithm, you may want to explore more advanced options
+      const resizedBuffer = imageBuffer; // Replace this line with your actual image resizing logic
+  
+      resolve(resizedBuffer);
+    });
+  }
+
   //Get user's own posts
   async getUserPosts(startIndex: number, endIndex: number, uid: string): Promise<Post[]> {
     if (uid) {

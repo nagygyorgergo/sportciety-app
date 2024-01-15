@@ -1,0 +1,49 @@
+<ion-content>
+  <ion-list>
+    <ion-card *ngFor="let post of userPosts">
+      <ng-container *ngFor="let imageUrl of postImages">
+        <ion-img *ngIf="imageUrl.includes(post.id)" alt="Uploaded image" [src]="imageUrl">
+          <ion-spinner name="circular"></ion-spinner>
+        </ion-img>
+      </ng-container>
+  
+      <ion-card-header>
+        <ion-card-subtitle>{{ post.createdAt | date: 'dd/MM/yyyy HH:mm:ss' }}</ion-card-subtitle>
+        <ion-card-title>
+          <ng-container *ngIf="usernames[post.uid] | async as username; else loadingUsername">
+            {{ username }}
+          </ng-container>
+          <ng-template #loadingUsername>
+            Loading Username...
+          </ng-template>
+        </ion-card-title>
+      </ion-card-header>
+  
+      <ion-card-content>
+        {{ post.text }}
+      </ion-card-content>
+  
+      <ion-icon
+        name="heart"
+        size="large"
+        [style.position]="'absolute'"
+        [style.bottom]="'8px'"
+        [style.right]="'8px'"
+        [style.cursor]="'pointer'"
+        [style.color]="post.likerUids.includes(currentUid) ? 'red' : 'black'"
+        (click)="likePost(post.id);"
+      ></ion-icon>
+  
+      <span style="position: absolute; bottom: 12px; right: 50px;">{{ post.likeCount }}</span>
+  
+    </ion-card>
+  
+    <ion-button *ngIf="userPosts.length === 0" expand="full" (click)="redirectToFriendsPage()">Find friends</ion-button>
+  
+  </ion-list>
+  
+  <ion-infinite-scroll threshold="100px" (ionInfinite)="loadNextPage($event)">
+    <ion-infinite-scroll-content loadingText="Loading more...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>

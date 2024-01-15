@@ -8,9 +8,6 @@
 </ion-header>
 
 <ion-content class="ion-padding" [fullscreen]="true">
-  <ng-template #notAllowed>
-    You are not allowed to reach this page.
-  </ng-template>
   <ng-container *ngIf="currentUserFrienduids.includes(this.friendUid ?? ''); else notAllowed">
     <div class="preview">
       <ion-avatar>
@@ -76,5 +73,8 @@
     </ion-infinite-scroll>
   </ng-container>
   
+  <ng-template #notAllowed>
+    You are not allowed to reach this page.
+  </ng-template>
 
 </ion-content>
