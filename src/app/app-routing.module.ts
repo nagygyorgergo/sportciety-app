@@ -70,10 +70,6 @@ const routes: Routes = [
     redirectTo: 'error', 
     pathMatch: 'full' 
   },
-
- 
-
-
 ];
 
 @NgModule({

@@ -2,7 +2,10 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { AuthService } from './services/auth.service';
 import { Router } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { IonMenu, MenuController } from '@ionic/angular';
+import { AlertController, IonMenu, IonRouterOutlet, MenuController, NavController, Platform } from '@ionic/angular';
+import { Subscription } from 'rxjs';
+import { Location } from '@angular/common';
+import { App } from '@capacitor/app';
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -17,8 +20,11 @@ export class AppComponent implements OnInit{
     { title: 'View my trainings', url: 'display-my-trainings', icon: 'archive' },
     /* { title: 'Trash', url: '/folder/trash', icon: 'trash' }, */
   ];
+
+  private afAuthSubscribtion: Subscription | null = null;
   
   @ViewChild('menu', { static: true }) menu: IonMenu | any;
+  @ViewChild(IonRouterOutlet, { static: true }) routerOutlet: IonRouterOutlet | any;
   email: any;
   themeToggle = false;
   
@@ -26,6 +32,10 @@ export class AppComponent implements OnInit{
     private authService: AuthService,
     private router: Router,
     private afAuth: AngularFireAuth,
+    private platform: Platform,
+    private location: Location,
+    private alertController: AlertController,
+    private navCtrl: NavController
     ) {
       this.afAuth.authState.subscribe(user=>{
         this.email=user?.email;
@@ -42,6 +52,77 @@ export class AppComponent implements OnInit{
 
     // Listen for changes to the prefers-color-scheme media query
     prefersDark.addEventListener('change', (mediaQuery) => this.initializeDarkTheme(mediaQuery.matches));
+
+    this.backButtonEvent();
+  }
+
+  ngOnDestroy(): void{
+    if(this.afAuthSubscribtion){
+      this.afAuthSubscribtion.unsubscribe();
+    }
+  }
+
+  backButtonEvent() {
+    this.platform.backButton.subscribeWithPriority(0, () => {
+      console.log('Back button pressed on 0 parameter');
+      // Check if the current page is the home page
+      if (!this.routerOutlet.canGoBack()) {
+        // If on the home page and it's not the root page, exit the app
+        this.backButtonAlert();
+      } else {
+        // If not on the home page or it's the root page, navigate back
+        this.location.back();
+      }
+    });
+
+    /* this.platform.backButton.subscribeWithPriority(100, () => {
+      console.log('Back button pressed on 100 parameter');
+      // Check if the current page is the home page
+      if (!this.routerOutlet.canGoBack()) {
+        // If on the home page and it's not the root page, exit the app
+        this.backButtonAlert();
+      } else {
+        // If not on the home page or it's the root page, navigate back
+        this.location.back();
+      }
+    }); */
+  }
+
+  /* backButtonEvent() {
+    this.platform.backButton.subscribeWithPriority(10, () => {
+      console.log('Back button pressed');
+
+      // Check if the current page is the home page
+      if (this.navCtrl.length() <= 1) {
+        // If on the home page or it's the root page, exit the app
+        this.backButtonAlert();
+      } else {
+        // If not on the home page and there are pages to go back to, navigate back
+        this.location.back();
+      }
+    });
+  } */
+  
+
+  async backButtonAlert(){
+    const alert = await this.alertController.create({
+      header: 'Exit',
+      message: `Are you sure you wantexit the app?`,
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Close app',
+          handler: () => {
+            App.exitApp();
+          }
+        }
+      ]
+      });
+      await alert.present();
+
   }
 
   // Check/uncheck the toggle and update the theme based on isDark

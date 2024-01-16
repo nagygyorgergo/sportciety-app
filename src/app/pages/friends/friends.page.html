@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
+      <ion-back-button></ion-back-button>
     </ion-buttons>
     <ion-title>Friends</ion-title> 
   </ion-toolbar>
@@ -15,7 +15,9 @@
     <ion-list>
       <ng-container *ngFor="let result of results async">
         <ion-item *ngIf="result.uid !== currentUserUid">
-          <img class="profile-picture" slot="start" *ngIf="result?.imageUrl;" [src]="result.imageUrl">
+          <ion-avatar *ngIf="result?.imageUrl;">
+            <img [src]="result.imageUrl">
+          </ion-avatar>
           <ion-label>{{ result.username }}</ion-label>
           <ion-button *ngIf="!isFriend(result.uid)" slot="end" (click)="sendFriendRequest(result.uid)">Add</ion-button>
         </ion-item>
@@ -47,17 +49,27 @@
     <ion-list>
       <ion-label>Your friends</ion-label>
       <ion-card *ngFor="let friend of friends">
-        <ion-item>
+        <ion-item class="friend-item">
           <ion-avatar>
             <img [src]="friend.imageUrl">
           </ion-avatar>
           
           <ion-label>{{ friend.username }}</ion-label>
-          <ion-button slot="end" (click)="redirectToFriendProfile(friend.uid)">View profile</ion-button>
-          <ion-button slot="end" (click)="deleteFriend(friend.uid)">Delete friend</ion-button>
+  
+          <!-- View profile button with person icon -->
+          <ion-button class="friend-button" (click)="redirectToFriendProfile(friend.uid)">
+            <ion-icon name="person"></ion-icon>
+            
+          </ion-button>
+  
+          <!-- Delete button with bin icon -->
+          <ion-button class="friend-button" (click)="deleteFriend(friend.uid)">
+            <ion-icon name="trash"></ion-icon>
+          </ion-button>
         </ion-item>
       </ion-card>
     </ion-list>
   </ion-card>
+  
   
 </ion-content>

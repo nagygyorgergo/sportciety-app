@@ -135,14 +135,13 @@ export class ProfilePage implements OnInit {
   }
 
   redirectToFriendsPage(){
-    this.router.navigateByUrl('/friends', {replaceUrl: true});
+    this.router.navigate(['/friends']);
   }
 
   redirectToCreatePostPage(){
-    this.router.navigateByUrl('/create-post', {replaceUrl: true});
+    this.router.navigate(['/create-post']);
   }
 
-  
   async loadNextPage(event?: any) {
     if (this.isLoading) return;
 
