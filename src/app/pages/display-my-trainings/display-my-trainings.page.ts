@@ -50,6 +50,7 @@ export class DisplayMyTrainingsPage implements OnInit {
   expandedTrainings: Set<string> = new Set<string>();
   
   searchTerm: string = '';
+  showSharedOnly: boolean = false;
   myTrainingPlans: Training[] = [];
   filteredTrainingPlans: Training[] = [];
 
@@ -87,6 +88,7 @@ export class DisplayMyTrainingsPage implements OnInit {
 
   //Filter function for searchban
   filterItems(searchTerm: string) {
+    this.showSharedOnly = false;
     if (!searchTerm) {
       this.filteredTrainingPlans = this.myTrainingPlans;
       console.log(this.searchTerm);
@@ -96,14 +98,23 @@ export class DisplayMyTrainingsPage implements OnInit {
     searchTerm = searchTerm.toLowerCase();
   
     this.filteredTrainingPlans = this.myTrainingPlans.filter((trainingPlan: Training) => {
-  
       const title = trainingPlan.name?.toLowerCase();
       if(title==='' || title === null){
         return true;
       }
-  
       return title && title.includes(searchTerm);
     });
+  }
+
+  //Show shared trainings only
+  showSharedTrainings() {
+    if (this.showSharedOnly) {
+      // Filter only those trainings with isShared member set to true
+      this.filteredTrainingPlans = this.myTrainingPlans.filter(training => training.isShared === true);
+    } else {
+      // If showSharedOnly is false, display all training plans
+      this.filteredTrainingPlans = [...this.myTrainingPlans];
+    }
   }
 
   //Function for ion-searchbar's onClear action
@@ -127,7 +138,8 @@ export class DisplayMyTrainingsPage implements OnInit {
     return this.expandedTrainings.has(training.id);
   }
 
-  async deleteTraining(training: Training): Promise<void> {
+  async deleteTraining(training: Training, event: Event): Promise<void> {
+    event.stopPropagation();//prevent toggleDetails from showing training details
     const alert = await this.alertController.create({
       header: 'Confirm Deletion',
       message: `Are you sure you want to delete ${training.name}?`,
@@ -144,6 +156,33 @@ export class DisplayMyTrainingsPage implements OnInit {
               console.log('Training deleted successfully.');
             } catch (error) {
               console.error('Error deleting training:', error);
+            }
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  async shareTraining(training: Training, event: Event){
+    event.stopPropagation();//prevent toggleDetails from showing training details
+    const alert = await this.alertController.create({
+      header: 'Confirm sharing',
+      message: `Are you sure you want to share ${training.name}?`,
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Share',
+          handler: async () => {
+            try {
+              await this.trainingService.shareTraining(training.id);;
+              console.log('Training shared successfully.');
+            } catch (error) {
+              console.error('Error sharing training:', error);
             }
           }
         }

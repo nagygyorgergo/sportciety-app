@@ -249,7 +249,7 @@ export class FriendsPage implements OnInit {
           }
         }
       }
-    ] 
+    ]
     });
     await alert.present();
   }

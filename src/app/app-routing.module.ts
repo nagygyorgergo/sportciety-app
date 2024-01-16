@@ -65,20 +65,11 @@ const routes: Routes = [
     path: 'error',
     loadChildren: () => import('./pages/error/error.module').then( m => m.ErrorPageModule)
   },
-  // Wildcard route for unrecognized URLs
   { 
     path: '**', 
     redirectTo: 'error', 
     pathMatch: 'full' 
-  },  {
-    path: 'home-posts',
-    loadChildren: () => import('./pages/home-posts/home-posts.module').then( m => m.HomePostsPageModule)
   },
-  {
-    path: 'home-trainings',
-    loadChildren: () => import('./pages/home-trainings/home-trainings.module').then( m => m.HomeTrainingsPageModule)
-  },
-
 
  
 

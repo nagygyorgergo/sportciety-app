@@ -2,18 +2,23 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { Training } from '../models/training.model';
 import { map } from 'rxjs';
+import { Firestore, collection, doc, getDoc, getDocs, limit, orderBy, query, where } from '@angular/fire/firestore';
+import { Post } from '../models/post.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TrainingService {
-  constructor(private firestore: AngularFirestore) {}
+  constructor(
+    private angularFirestore: AngularFirestore,
+    private firestore: Firestore,
+    ) {}
 
   async addTraining(training: Training): Promise<DocumentReference<Training>> {
-    const trainingCollection = this.firestore.collection<Training>('trainings');
+    const trainingCollection = this.angularFirestore.collection<Training>('trainings');
   
     // Generate a new ID for the training document
-    const trainingId = this.firestore.createId();
+    const trainingId = this.angularFirestore.createId();
   
     // Create a new document reference with the generated ID
     const trainingRef = trainingCollection.doc(trainingId).ref;
@@ -33,7 +38,7 @@ export class TrainingService {
   }
   
   async deleteTraining(training: Training): Promise<void> {
-    const trainingDocRef = this.firestore.collection<Training>('trainings').doc(training.id);
+    const trainingDocRef = this.angularFirestore.collection<Training>('trainings').doc(training.id);
   
     // Delete the training document
     await trainingDocRef.delete();
@@ -42,14 +47,14 @@ export class TrainingService {
     const exercisesCollectionRef = trainingDocRef.collection('exercises');
     const exercisesDocs = await exercisesCollectionRef.get().toPromise();
     if (exercisesDocs && !exercisesDocs.empty) {
-      const batch = this.firestore.firestore.batch();
+      const batch = this.angularFirestore.firestore.batch();
       exercisesDocs.docs.forEach(doc => batch.delete(doc.ref));
       await batch.commit();
     }
   }
 
   getMyTrainings(uid: string) {
-    return this.firestore.collection<Training>('trainings', ref =>
+    return this.angularFirestore.collection<Training>('trainings', ref =>
       ref.where('uid', '==', uid)
          .orderBy('createdAt', 'desc')
     )
@@ -64,4 +69,66 @@ export class TrainingService {
       )
     );
   }
+
+  async shareTraining(trainingId: string): Promise<void> {
+    try {
+      const trainingRef = this.angularFirestore.collection<Training>('trainings').doc(trainingId).ref;
+      // Update the training document to set isShared to true
+      await trainingRef.update({
+        isShared: true,
+        sharingDate: new Date().getTime()
+      });
+    } catch (error) {
+      // Handle the error appropriately
+      console.error('Error sharing training:', error);
+      throw error;
+    }
+  }
+
+  //Get user's friends' posts
+  async getFriendsTrainingplans(startIndex: number, endIndex: number, uid: string): Promise<Training[]> {
+    if (uid) {
+      try {
+        // Fetch the user's friend UIDs from their collection
+        const userCollection = collection(this.firestore, 'users');
+        const userDoc = await getDoc(doc(userCollection, uid));
+        const user = userDoc.data();
+
+        if (user && user['friendUids'] && user['friendUids'].length > 0) {
+          const friendUids = user['friendUids'];
+
+          // Query posts where the 'uid' is in the list of friendUids
+          const trainingsCollection = collection(this.firestore, 'trainings');
+          const q = query(
+            trainingsCollection,
+            where('uid', 'in', friendUids),
+            orderBy('sharingDate', 'desc'),
+            limit(endIndex)
+          );
+
+          const querySnapshot = await getDocs(q);
+          const friendTrainings: Training[] = [];
+
+          querySnapshot.forEach((doc) => {
+            friendTrainings.push(doc.data() as Training);
+          });
+
+          const startIndexAdjusted = startIndex < friendTrainings.length ? startIndex : 0;
+          const endIndexAdjusted = endIndex < friendTrainings.length ? endIndex : friendTrainings.length;
+
+          const trainingsBetweenIndexes = friendTrainings.slice(startIndexAdjusted, endIndexAdjusted);
+
+          return trainingsBetweenIndexes;
+        } else {
+          return []; // No friends or empty friendUids
+        }
+      } catch (error) {
+        console.error('Error fetching user trainings:', error);
+        return [];
+      }
+    } else {
+      throw new Error('User is not defined');
+    }
+  }
+
 }

@@ -75,7 +75,10 @@ export class PlanTrainingPage implements OnInit {
       uid: this.currentUid,
       name: this.nameForm.get('name')?.value,
       createdAt: new Date().getTime(),
-      exercises: this.addedExercises/* [
+      exercises: this.addedExercises,
+      isShared: false,
+      sharingDate: 0
+      /* [
         {
           name: 'Exercise 2',
           weight: 'medium',
@@ -131,5 +134,7 @@ export class PlanTrainingPage implements OnInit {
     });
     await alert.present();
   }
+
+  
 
 }

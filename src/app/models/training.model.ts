@@ -4,6 +4,8 @@ export interface Training {
     name: string;
     exercises: Exercise[];
     createdAt: number;
+    isShared: boolean;
+    sharingDate: number;
 }
 
 export interface Exercise {

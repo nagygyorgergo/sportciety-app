@@ -8,7 +8,6 @@ import { Post } from '../models/post.model';
 import { Firestore} from '@angular/fire/firestore';
 import { query, orderBy, getDoc, doc } from "firebase/firestore";  
 import { deleteObject } from 'firebase/storage';
-import { Observable } from 'rxjs';
 import { Userdata } from '../models/user.model';
 
 @Injectable({

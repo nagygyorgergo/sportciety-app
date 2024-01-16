@@ -9,17 +9,31 @@
 
 <ion-content>
   
-  <ion-searchbar [(ngModel)]="searchTerm" (input)="filterItems(searchTerm)" (ionClear)="clearSearchTerm()"></ion-searchbar>
+  <ion-item>
+    <ion-searchbar [(ngModel)]="searchTerm" (input)="filterItems(searchTerm)" (ionClear)="clearSearchTerm()"></ion-searchbar>
+    <ion-toggle [(ngModel)]="showSharedOnly" (ionChange)="showSharedTrainings()">Show shared only</ion-toggle>
+  </ion-item>
 
   <ion-list>
     <ng-container *ngFor="let trainingPlan of filteredTrainingPlans async">
       <ion-item *ngIf="isTrainingExpanded(trainingPlan)" class="trainingplan-name" (click)="toggleDetails(trainingPlan)" color="primary">
         <ion-label>{{ trainingPlan.name }}</ion-label>
-        <ion-button color="danger" (click)="deleteTraining(trainingPlan)">Delete</ion-button>
+        <ion-label>{{ trainingPlan.createdAt | date}}</ion-label>
+        <ion-button color="danger" (click)="deleteTraining(trainingPlan, $event)">
+          <ion-icon name="trash-outline"></ion-icon>
+        </ion-button>
+        <ion-button color="success" (click)="shareTraining(trainingPlan, $event)">
+          <ion-icon name="share-social-outline"></ion-icon>
+        </ion-button>
       </ion-item>
       <ion-item *ngIf="!isTrainingExpanded(trainingPlan)" class="trainingplan-name" (click)="toggleDetails(trainingPlan)">
         <ion-label>{{ trainingPlan.name }}</ion-label>
-        <ion-button color="danger" (click)="deleteTraining(trainingPlan)">Delete</ion-button>
+        <ion-button color="danger" (click)="deleteTraining(trainingPlan, $event)">
+          <ion-icon name="trash-outline"></ion-icon>
+        </ion-button>
+        <ion-button color="success" (click)="shareTraining(trainingPlan, $event)">
+          <ion-icon name="share-social-outline"></ion-icon>
+        </ion-button>
       </ion-item>
       <ion-list *ngIf="expandedTrainings.has(trainingPlan.id)" @fadeIn>
         <ion-item *ngFor="let exercise of trainingPlan.exercises;" @fadeOut>
