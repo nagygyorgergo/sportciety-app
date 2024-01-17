@@ -232,6 +232,12 @@ export class HomeTrainingsPage implements OnInit {
   }
    */
   redirectToFriendsPage(){
-    this.router.navigateByUrl('/friends', {replaceUrl: true});
+    this.router.navigate(['/friends']);
+  }
+
+  //Redirect user to the selected friend's profile
+  redirectToFriendProfile(friendUid: string, event: Event) {
+    event.stopPropagation();//prevent toggleDetails from showing training details
+    this.router.navigate(['/friend-profile', friendUid]);
   }
 }

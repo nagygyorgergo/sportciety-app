@@ -9,7 +9,7 @@
   
       <ion-card-header>
         <ion-card-subtitle>{{ post.createdAt | date: 'dd/MM/yyyy HH:mm:ss' }}</ion-card-subtitle>
-        <ion-card-title>
+        <ion-card-title (click)="redirectToFriendProfile(post.uid)">
           <ng-container *ngIf="usernames[post.uid] | async as username; else loadingUsername">
             {{ username }}
           </ng-container>

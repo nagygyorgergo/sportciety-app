@@ -180,7 +180,13 @@ export class HomePostsPage implements OnInit {
     }
   }
   
+  //Used for redirecting user to friends-page if they have no friends yet.
   redirectToFriendsPage(){
-    this.router.navigateByUrl('/friends', {replaceUrl: true});
+    this.router.navigate(['/friends']);
+  }
+
+  //Redirect user to specific user's profile if they click the username in a post.
+  redirectToFriendProfile(friendUid: string) {
+    this.router.navigate(['/friend-profile', friendUid]);
   }
 }
