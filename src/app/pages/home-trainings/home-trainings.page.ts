@@ -238,6 +238,6 @@ export class HomeTrainingsPage implements OnInit {
   //Redirect user to the selected friend's profile
   redirectToFriendProfile(friendUid: string, event: Event) {
     event.stopPropagation();//prevent toggleDetails from showing training details
-    this.router.navigate(['/friend-profile', friendUid]);
+    this.router.navigate(['/friend-profile/friend-profile-posts', friendUid]);
   }
 }

@@ -57,10 +57,10 @@ const routes: Routes = [
     ...canActivate(redirectUnauthorizedToLogin)
   },
   {
-    path: 'friend-profile/:friendUid',
+    path: 'friend-profile',
     loadChildren: () => import('./pages/friend-profile/friend-profile.module').then( m => m.FriendProfilePageModule),
     ...canActivate(redirectUnauthorizedToLogin)
-  },
+  }, 
   {
     path: 'error',
     loadChildren: () => import('./pages/error/error.module').then( m => m.ErrorPageModule)
@@ -70,6 +70,7 @@ const routes: Routes = [
     redirectTo: 'error', 
     pathMatch: 'full' 
   },
+
 ];
 
 @NgModule({

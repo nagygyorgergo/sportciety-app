@@ -1,10 +1,4 @@
-ion-avatar{
-    width: 128px;
-    height: 128px;
-}
-
-.preview{
-    margin-top: 50px;
-    display: flex;
-    justify-content: center;
-}
+.custom-tab-button.ion-tab-button-selected ion-icon {
+    color: var(--ion-color-primary); /* Set the icon color for the selected tab */
+  }
+  

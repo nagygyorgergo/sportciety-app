@@ -1,6 +1,5 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { user } from '@angular/fire/auth';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { DocumentData } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
@@ -39,7 +38,8 @@ export class FriendsPage implements OnInit {
   //subscribtion variable
   private afAuthSubscribtion: Subscription | null = null;
   private avatarServiceSubscribtion: Subscription | null | undefined = null;
-  private userServiceSubscribtion: Subscription | null = null;
+  private userServiceSubscribtion01: Subscription | null = null;
+  private userServiceSubscribtion02: Subscription | null = null;
   private friendRequestSubscribtion: Subscription | null = null;
   private friendsSubscribtion: Subscription | null = null;
   private combineLatestSubscription: Subscription | null = null;
@@ -60,7 +60,7 @@ export class FriendsPage implements OnInit {
       if (user) {
         this.currentUserUid = user.uid;
 
-        this.userServiceSubscribtion = this.userService.getUserById(this.currentUserUid).subscribe(user => {
+        this.userServiceSubscribtion01 = this.userService.getUserById(this.currentUserUid).subscribe(user => {
           this.currentUserUsername = user.username;
         });
 
@@ -86,8 +86,11 @@ export class FriendsPage implements OnInit {
     if(this.avatarServiceSubscribtion){
       this.avatarServiceSubscribtion.unsubscribe();
     }
-    if(this.userServiceSubscribtion){
-      this.userServiceSubscribtion.unsubscribe();
+    if(this.userServiceSubscribtion01){
+      this.userServiceSubscribtion01.unsubscribe();
+    }
+    if(this.userServiceSubscribtion02){
+      this.userServiceSubscribtion02.unsubscribe();
     }
     if(this.friendRequestSubscribtion){
       this.friendRequestSubscribtion.unsubscribe();
@@ -108,7 +111,7 @@ export class FriendsPage implements OnInit {
       return;
     }
   
-    this.userServiceSubscribtion = this.userService.getUserByUsername(searchTerm).subscribe((users: Userdata[]) => {
+    this.userServiceSubscribtion02 = this.userService.getUserByUsername(searchTerm).subscribe((users: Userdata[]) => {
       this.resultUsers = users;
   
       console.log(this.resultUsers);
@@ -217,10 +220,10 @@ export class FriendsPage implements OnInit {
   }
 
   //Redirect user to the selected friend's profile
-  redirectToFriendProfile(friendUid: string) {
-    this.router.navigate(['/friend-profile', friendUid]);
+  redirectToFriendProfile(friendUid: string) {;
+    this.router.navigate(['/friend-profile/friend-profile-posts', friendUid]);
   }
-
+  
   //Delete friend dialog
   async deleteFriend(friendUid: string) {
     const alert = await this.alertController.create({

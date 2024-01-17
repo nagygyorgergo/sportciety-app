@@ -186,7 +186,7 @@ export class HomePostsPage implements OnInit {
   }
 
   //Redirect user to specific user's profile if they click the username in a post.
-  redirectToFriendProfile(friendUid: string) {
-    this.router.navigate(['/friend-profile', friendUid]);
+  redirectToFriendProfile(friendUid: string) {;
+    this.router.navigate(['/friend-profile/friend-profile-posts', friendUid]);
   }
 }
