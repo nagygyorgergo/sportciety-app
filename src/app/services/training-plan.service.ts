@@ -53,9 +53,29 @@ export class TrainingService {
     }
   }
 
+  //Get logged in user's own trainings on displa-my-trainings page
   getMyTrainings(uid: string) {
     return this.angularFirestore.collection<Training>('trainings', ref =>
       ref.where('uid', '==', uid)
+         .orderBy('createdAt', 'desc')
+    )
+    .snapshotChanges()
+    .pipe(
+      map(actions =>
+        actions.map(a => {
+          const data = a.payload.doc.data() as Training;
+          const docid = a.payload.doc.id;
+          return { docid, ...data };
+        })
+      )
+    );
+  }
+
+  //Get current user's friend's trainings for friend-profile-trainings
+  getFriendTrainings(uid: string) {
+    return this.angularFirestore.collection<Training>('trainings', ref =>
+      ref.where('uid', '==', uid)
+         .where('isShared', '==', true)
          .orderBy('createdAt', 'desc')
     )
     .snapshotChanges()
@@ -102,6 +122,7 @@ export class TrainingService {
           const q = query(
             trainingsCollection,
             where('uid', 'in', friendUids),
+            where('isShared', '==', true),
             orderBy('sharingDate', 'desc'),
             limit(endIndex)
           );

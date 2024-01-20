@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { Router } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 import { Camera, CameraResultType, CameraSource, Photo } from '@capacitor/camera';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
@@ -107,9 +107,11 @@ export class CreatePostPage implements OnInit {
     }
   }
 
-  
+  /* this.router.navigateByUrl('/profile', {replaceUrl: true}); */
   redirectToProfile(){
-    this.router.navigateByUrl('/profile', {replaceUrl: true});
+    this.router.navigate(['/profile']).then(() => {
+      window.location.reload();
+    });
   }
- 
+  
 }
