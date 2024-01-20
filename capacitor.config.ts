@@ -5,9 +5,9 @@ const config: CapacitorConfig = {
   appName: 'Sportciety',
   webDir: 'www',
   plugins: {
-    'PushNotificatins':{
-      'presentationOptions': ['badge', 'sound', 'alert']
-    }
+    PushNotifications: {
+      presentationOptions: ["badge", "sound", "alert"],
+    },
   },
   server: {
     androidScheme: 'https'

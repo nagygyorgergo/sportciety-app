@@ -3,9 +3,11 @@ import { AuthService } from './services/auth.service';
 import { Router } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AlertController, IonMenu, IonRouterOutlet, MenuController, NavController, Platform } from '@ionic/angular';
-import { Subscription } from 'rxjs';
+import { Subscription, async } from 'rxjs';
 import { Location } from '@angular/common';
 import { App } from '@capacitor/app';
+import { PushNotifications, Token, PushNotificationSchema, ActionPerformed } from '@capacitor/push-notifications';
+import { Capacitor } from '@capacitor/core';
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -35,7 +37,6 @@ export class AppComponent implements OnInit{
     private platform: Platform,
     private location: Location,
     private alertController: AlertController,
-    private navCtrl: NavController
     ) {
       this.afAuth.authState.subscribe(user=>{
         this.email=user?.email;
@@ -43,17 +44,48 @@ export class AppComponent implements OnInit{
   }
 
   ngOnInit() {
-    // Use matchMedia to check the user preference
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-
-    // Initialize the dark theme based on the initial
-    // value of the prefers-color-scheme media query
-    this.initializeDarkTheme(prefersDark.matches);
-
-    // Listen for changes to the prefers-color-scheme media query
-    prefersDark.addEventListener('change', (mediaQuery) => this.initializeDarkTheme(mediaQuery.matches));
-
     this.backButtonEvent();
+
+    if(Capacitor.platform !== 'web'){
+      // Request permission to use push notifications
+      // iOS will prompt user and return if they granted permission or not
+      // Android will just grant without prompting
+      PushNotifications.requestPermissions().then(result => {
+        if (result.receive === 'granted') {
+          // Register with Apple / Google to receive push via APNS/FCM
+          PushNotifications.register();
+        } else {
+          // Show some error
+        }
+      });
+
+      PushNotifications.addListener('registration', (token: Token) => {
+        console.log('Push registration success, token: ' + token.value);
+      });
+
+      PushNotifications.addListener('registrationError', (error: any) => {
+        console.log('Error on registration: ' + JSON.stringify(error));
+      });
+
+      PushNotifications.addListener(
+        'pushNotificationReceived',
+        (notification: PushNotificationSchema) => {
+          console.log('Push received: ' + JSON.stringify(notification));
+        },
+      );
+
+      PushNotifications.addListener(
+        'pushNotificationActionPerformed',
+        (notification: ActionPerformed) => {
+          const data = notification.notification.data;
+          console.log('Push action performed: ' + JSON.stringify(notification));
+          if(data.detailsId){
+            this.router.navigate(['/friends']);
+          }
+        },
+      );
+    }
+  
   }
 
   ngOnDestroy(): void{
@@ -74,36 +106,8 @@ export class AppComponent implements OnInit{
         this.location.back();
       }
     });
-
-    /* this.platform.backButton.subscribeWithPriority(100, () => {
-      console.log('Back button pressed on 100 parameter');
-      // Check if the current page is the home page
-      if (!this.routerOutlet.canGoBack()) {
-        // If on the home page and it's not the root page, exit the app
-        this.backButtonAlert();
-      } else {
-        // If not on the home page or it's the root page, navigate back
-        this.location.back();
-      }
-    }); */
   }
-
-  /* backButtonEvent() {
-    this.platform.backButton.subscribeWithPriority(10, () => {
-      console.log('Back button pressed');
-
-      // Check if the current page is the home page
-      if (this.navCtrl.length() <= 1) {
-        // If on the home page or it's the root page, exit the app
-        this.backButtonAlert();
-      } else {
-        // If not on the home page and there are pages to go back to, navigate back
-        this.location.back();
-      }
-    });
-  } */
   
-
   async backButtonAlert(){
     const alert = await this.alertController.create({
       header: 'Exit',
@@ -125,22 +129,6 @@ export class AppComponent implements OnInit{
 
   }
 
-  // Check/uncheck the toggle and update the theme based on isDark
-  initializeDarkTheme(isDark: boolean) {
-    this.themeToggle = isDark;
-    this.toggleDarkTheme(isDark);
-  }
-
-  // Listen for the toggle check/uncheck to toggle the dark theme
-  toggleChange(event: any) {
-    this.toggleDarkTheme(event.detail.checked);
-  }
-
-  // Add or remove the "dark" class on the document body
-  toggleDarkTheme(shouldAdd: boolean) {
-    document.body.classList.toggle('dark', shouldAdd);
-  }
-
   async logout(){
     this.afAuth.authState.subscribe(user =>{
       if(user){
@@ -155,4 +143,6 @@ export class AppComponent implements OnInit{
     this.menu.close();
     this.router.navigateByUrl('login', {replaceUrl: true});
   }
+
+
 }
