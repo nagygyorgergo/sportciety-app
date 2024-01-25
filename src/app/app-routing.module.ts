@@ -60,7 +60,17 @@ const routes: Routes = [
     path: 'friend-profile',
     loadChildren: () => import('./pages/friend-profile/friend-profile.module').then( m => m.FriendProfilePageModule),
     ...canActivate(redirectUnauthorizedToLogin)
-  }, 
+  },
+  {
+    path: 'personal-bests',
+    loadChildren: () => import('./pages/personal-bests/personal-bests.module').then( m => m.PersonalBestsPageModule),
+    ...canActivate(redirectUnauthorizedToLogin)
+  },
+  {
+    path: 'personal-best-details/:exercise',
+    loadChildren: () => import('./pages/personal-best-details/personal-best-details.module').then(m => m.PersonalBestDetailsPageModule),
+    ...canActivate(redirectUnauthorizedToLogin)
+  },
   {
     path: 'error',
     loadChildren: () => import('./pages/error/error.module').then( m => m.ErrorPageModule)
@@ -70,7 +80,7 @@ const routes: Routes = [
     redirectTo: 'error', 
     pathMatch: 'full' 
   },
-
+  
 ];
 
 @NgModule({

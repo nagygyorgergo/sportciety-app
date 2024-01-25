@@ -1,0 +1,71 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Personal personal bests</ion-title> 
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <!-- strength card -->
+  <ion-card (click)="toggleDetails('strength')">
+    <ion-img alt="Strenght image" [src]="strenghtImageUrl" style="height: 250px;"></ion-img>
+    <ion-card-header>
+      <ion-card-title>
+        <ng-container>
+          Strength
+        </ng-container>
+      </ion-card-title>
+      <ion-card-subtitle>Tap to expand</ion-card-subtitle>
+    </ion-card-header>
+
+    <ng-container *ngIf="isStrenghtExpanded">
+      <ion-card-content @fadeIn>
+        <form [formGroup]="exerciseForm" (click)="stopClickPropagation($event)" (ngSubmit)="createNewPersonalBestExercise('strength')" @fadeOut>
+          <ion-item fill="solid" class="ion-margin-bottom">
+            <ion-input type="text" placeholder="Exercise name" formControlName="exerciseName"></ion-input>
+            <ion-note slot="end" *ngIf="exerciseForm.get('exerciseName')!.invalid && exerciseForm.get('exerciseName')!.touched">
+              <span *ngIf="exerciseForm.get('exerciseName')!.errors?.['required']">Exercise name is required.</span>
+            </ion-note>
+          </ion-item>
+          
+          <ion-button expand="full" type="submit" [disabled]="exerciseForm.invalid">Add exercise</ion-button>
+        </form>
+      </ion-card-content>
+    </ng-container>
+    
+    
+    
+  </ion-card>
+
+  <!-- endurance card -->
+  <ion-card (click)="toggleDetails('endurance')">
+    <ion-img alt="Endurance image" [src]="enduranceImageUrl" style="height: 250px;"></ion-img>
+    <ion-card-header>
+      <ion-card-title>
+        <ng-container>
+          Endurance
+        </ng-container>
+      </ion-card-title>
+      <ion-card-subtitle>Tap to expand</ion-card-subtitle>
+    </ion-card-header>
+
+    <ng-container *ngIf="isEnduranceExpanded">
+      <ion-card-content @fadeIn>
+        <form [formGroup]="exerciseForm" (click)="stopClickPropagation($event)" (ngSubmit)="createNewPersonalBestExercise('endurance')" @fadeOut>
+          <ion-item fill="solid" class="ion-margin-bottom">
+            <ion-input type="text" placeholder="Exercise name" formControlName="exerciseName"></ion-input>
+            <ion-note slot="end" *ngIf="exerciseForm.get('exerciseName')!.invalid && exerciseForm.get('exerciseName')!.touched">
+              <span *ngIf="exerciseForm.get('exerciseName')!.errors?.['required']">Exercise name is required.</span>
+            </ion-note>
+          </ion-item>
+          
+          <ion-button expand="full" type="submit" [disabled]="exerciseForm.invalid">Add exercise</ion-button>
+        </form>
+      </ion-card-content>
+    </ng-container>
+  </ion-card>
+
+</ion-content>
+ 

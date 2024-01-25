@@ -19,6 +19,7 @@ export class CreatePostPage implements OnInit {
   isPostCreated: boolean = false; //Only able to upload image if post exists
 
   image!: Photo;
+  video: any;
   imageLocalPath = '';
 
   //Subscribtion variable
@@ -88,11 +89,10 @@ export class CreatePostPage implements OnInit {
     }
   }
   
-
   async uploadImage(image: Photo){
     if(image){
       const loading = await this.loadingController.create();
-      await loading.present;
+      loading.present;
       const result = await this.postService.uploadImage(image, this.createdPostId);
       loading.dismiss();
 

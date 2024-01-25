@@ -7,8 +7,9 @@ import { Photo } from '@capacitor/camera';
 import { Post } from '../models/post.model';
 import { Firestore} from '@angular/fire/firestore';
 import { query, orderBy, getDoc, doc } from "firebase/firestore";  
-import { deleteObject } from 'firebase/storage';
+import { StorageReference, UploadTask, deleteObject, uploadBytes } from 'firebase/storage';
 import { Userdata } from '../models/user.model';
+import { Observable, finalize } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,7 @@ export class PostService {
     private auth: Auth,
     private firestore: Firestore,
     private storage: Storage,
-    private angularFirestore: AngularFirestore
+    private angularFirestore: AngularFirestore,
     
   ) { }
 
@@ -115,20 +116,6 @@ export class PostService {
       return null;
     }
     return null;
-  }
-  
-  
-  // Function to resize the image using a simple resizing algorithm
-  resizeImage(imageBuffer: Buffer, width: number, height: number): Promise<Buffer> {
-    return new Promise((resolve) => {
-      const resizedWidth = 800; // Adjust the desired width
-      const resizedHeight = (resizedWidth / width) * height;
-  
-      // Use a simple resizing algorithm, you may want to explore more advanced options
-      const resizedBuffer = imageBuffer; // Replace this line with your actual image resizing logic
-  
-      resolve(resizedBuffer);
-    });
   }
 
   //Get user's own posts

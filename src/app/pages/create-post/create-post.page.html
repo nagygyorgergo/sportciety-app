@@ -13,6 +13,7 @@
 
     <img [src]="imageLocalPath" *ngIf="imageLocalPath" class="image-preview">
     <ion-button expand="full" (click)="selectImage()" >Select image to post</ion-button>
+    
 
     <ion-button expand="full" (click)="createPost()" [disabled]="isPostCreated || isPostTextEmpty()">Create post</ion-button>
   </ion-card>
