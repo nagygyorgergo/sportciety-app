@@ -33,10 +33,18 @@
           <ion-button expand="full" type="submit" [disabled]="exerciseForm.invalid">Add exercise</ion-button>
         </form>
       </ion-card-content>
+
+      <ion-list>
+        <ng-container *ngFor="let exercise of personalBests">
+          <ion-item *ngIf="exercise.type === 'strength'">
+            <ion-label (click)="redirectToExerciseDetails(exercise.exerciseName)">{{ exercise.exerciseName }}</ion-label>
+            <ion-button color="danger" (click)="deletePersonalBestExercise(exercise, $event)">
+              <ion-icon name="trash-outline"></ion-icon>
+            </ion-button>
+          </ion-item>
+        </ng-container>
+      </ion-list>
     </ng-container>
-    
-    
-    
   </ion-card>
 
   <!-- endurance card -->
@@ -64,8 +72,18 @@
           <ion-button expand="full" type="submit" [disabled]="exerciseForm.invalid">Add exercise</ion-button>
         </form>
       </ion-card-content>
+
+      <ion-list>
+        <ng-container *ngFor="let exercise of personalBests">
+          <ion-item *ngIf="exercise.type === 'endurance'">
+            <ion-label (click)="redirectToExerciseDetails(exercise.exerciseName)">{{ exercise.exerciseName }}</ion-label>
+            <ion-button color="danger" (click)="deletePersonalBestExercise(exercise, $event)">
+              <ion-icon name="trash-outline"></ion-icon>
+            </ion-button>
+          </ion-item>
+        </ng-container>
+      </ion-list>
     </ng-container>
   </ion-card>
-
 </ion-content>
  
