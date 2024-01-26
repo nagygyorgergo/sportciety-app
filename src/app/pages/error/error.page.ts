@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-error',
@@ -7,9 +8,25 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ErrorPage implements OnInit {
 
-  constructor() { }
+  message: string | null = null;
+
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private router: Router
+  ) { }
 
   ngOnInit() {
+    this.message = this.getMessageFromUrl();
+  }
+
+  getMessageFromUrl(){
+    const exerciseName = this.activatedRoute.snapshot.paramMap.get('message');
+    return exerciseName;
+  }
+
+  //Redirect to error if personalBestExercise's uid id not matching with current user's uid
+  redirectToHomePage(){
+    this.router.navigate(['/home']);
   }
 
 }

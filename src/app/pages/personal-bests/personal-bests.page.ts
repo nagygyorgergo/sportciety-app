@@ -118,7 +118,7 @@ export class PersonalBestsPage implements OnInit {
     if(!hasExercise){
       const loading = await this.loadingController.create();
       await loading.present();
-      this.personalBestsService.createPersonalBestStrenghtExercise(this.currentUid, this.exerciseForm.get('exerciseName')?.value, exerciseType)
+      this.personalBestsService.createPersonalBestExercise(this.currentUid, this.exerciseForm.get('exerciseName')?.value, exerciseType)
         .then(async () => {
           console.log('Personal best exercise created successfully');
           await loading.dismiss();

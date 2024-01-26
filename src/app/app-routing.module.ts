@@ -67,12 +67,12 @@ const routes: Routes = [
     ...canActivate(redirectUnauthorizedToLogin)
   },
   {
-    path: 'personal-best-details/:exercise',
+    path: 'personal-best-details/:id',
     loadChildren: () => import('./pages/personal-best-details/personal-best-details.module').then(m => m.PersonalBestDetailsPageModule),
     ...canActivate(redirectUnauthorizedToLogin)
   },
   {
-    path: 'error',
+    path: 'error/:message',
     loadChildren: () => import('./pages/error/error.module').then( m => m.ErrorPageModule)
   },
   { 

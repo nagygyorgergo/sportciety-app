@@ -66,7 +66,7 @@ export class FriendProfilePostsPage implements OnInit {
             if (user) {
               this.currentUserFrienduids = user.friendUids;
             } else {
-              this.redirectToErrorPage();
+              this.redirectToErrorPage('Couldnt find friend.');
             }
           },
         );
@@ -97,7 +97,7 @@ export class FriendProfilePostsPage implements OnInit {
                     this.loadNextPage();
                   }
                 } else {
-                  this.redirectToErrorPage();
+                  this.redirectToErrorPage('No friend found');
                 }
               },
             );
@@ -121,8 +121,8 @@ export class FriendProfilePostsPage implements OnInit {
   }
 
   //Redirect to error if user not found
-  redirectToErrorPage(){
-    this.router.navigateByUrl('/error', {replaceUrl: true});
+  redirectToErrorPage(message: string){
+    this.router.navigate(['/error', message]);
   }
 
   //redirect user to list friends page (after deleting friend)

@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/home"></ion-back-button>
+      <ion-back-button (click)="redirectToHomePage()"></ion-back-button>
     </ion-buttons>
     <ion-title>Error</ion-title> 
   </ion-toolbar>
@@ -9,9 +9,10 @@
 
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
+  <!-- <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">error</ion-title>
+      
     </ion-toolbar>
-  </ion-header>
+  </ion-header> -->
+  <ion-title size="large">{{message}}</ion-title>
 </ion-content>

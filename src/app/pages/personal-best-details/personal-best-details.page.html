@@ -3,10 +3,61 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>Create post</ion-title> 
+    <ion-title>{{personalBestExercise?.exerciseName}}</ion-title> 
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
+
+  <ion-card>
+
+    <!-- Form -->
+    <ion-card-content>
+      <form [formGroup]="recordForm" (ngSubmit)="submitRecord(personalBestExercise.id)">
+        <ion-item> 
+          <ion-label>Date</ion-label>
+          <ion-datetime formControlName="createdAt" presentation="date" class="ion-text-center" style="width: 100%;"></ion-datetime>
+        </ion-item>
+        <ng-container *ngIf="personalBestExercise && personalBestExercise.type === 'strength'">
+          <ion-item fill="solid" class="ion-margin-bottom">
+            <ion-input type="number" placeholder="Weight" formControlName="value"></ion-input>
+            <ion-note slot="end" *ngIf="recordForm.get('value')!.invalid && recordForm.get('value')!.touched">
+              <span *ngIf="recordForm.get('value')!.errors?.['required']">Exercise name is required.</span>
+            </ion-note>
+          </ion-item>
+        </ng-container>
+        
+        <ng-container *ngIf="personalBestExercise && personalBestExercise.type === 'endurance'">
+          <ion-item fill="solid" class="ion-margin-bottom">
+            <ion-input type="number" placeholder="Distance" formControlName="value"></ion-input>
+            <ion-note slot="end" *ngIf="recordForm.get('value')!.invalid && recordForm.get('value')!.touched">
+              <span *ngIf="recordForm.get('value')!.errors?.['required']">Exercise name is required.</span>
+            </ion-note>
+          </ion-item>
+        </ng-container>
+        
+        <ion-button expand="full" type="submit" [disabled]="recordForm.invalid">Add exercise</ion-button>
+      </form>
+    </ion-card-content>
+
+    <ion-list *ngIf="personalBestExercise && personalBestExercise.records && personalBestExercise.records.length > 0">
+      <ion-item *ngFor="let record of personalBestExercise.records">
+        <ion-label>Date: {{ record.createdAt | date }}</ion-label>
+        <ion-label>Value: {{ record.value }}</ion-label>
+        <ion-button color="danger" (click)="removeRecord(record.id)">
+          <ion-icon name="trash-outline"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </ion-list>
+    
+    <div *ngIf="!personalBestExercise || !personalBestExercise.records || personalBestExercise.records.length === 0">
+      No records available.
+    </div>
+    
+
+
+
+  </ion-card>
   
 </ion-content>
+ 

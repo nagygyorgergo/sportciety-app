@@ -37,7 +37,7 @@
       <ion-list>
         <ng-container *ngFor="let exercise of personalBests">
           <ion-item *ngIf="exercise.type === 'strength'">
-            <ion-label (click)="redirectToExerciseDetails(exercise.exerciseName)">{{ exercise.exerciseName }}</ion-label>
+            <ion-label (click)="redirectToExerciseDetails(exercise.id)">{{ exercise.exerciseName }}</ion-label>
             <ion-button color="danger" (click)="deletePersonalBestExercise(exercise, $event)">
               <ion-icon name="trash-outline"></ion-icon>
             </ion-button>
@@ -76,7 +76,7 @@
       <ion-list>
         <ng-container *ngFor="let exercise of personalBests">
           <ion-item *ngIf="exercise.type === 'endurance'">
-            <ion-label (click)="redirectToExerciseDetails(exercise.exerciseName)">{{ exercise.exerciseName }}</ion-label>
+            <ion-label (click)="redirectToExerciseDetails(exercise.id)">{{ exercise.exerciseName }}</ion-label>
             <ion-button color="danger" (click)="deletePersonalBestExercise(exercise, $event)">
               <ion-icon name="trash-outline"></ion-icon>
             </ion-button>
