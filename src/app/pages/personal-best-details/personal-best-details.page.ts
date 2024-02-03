@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AlertController, LoadingController } from '@ionic/angular';
+import { AlertController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { PersonalBest, PersonalBestRecord } from 'src/app/models/personal-best.model';
 import { PersonalBestsService } from 'src/app/services/personal-bests.service';
+import { BarController, BarElement, CategoryScale, Chart, LinearScale } from 'chart.js';
 
 @Component({
   selector: 'app-personal-best-details',
@@ -33,7 +34,6 @@ export class PersonalBestDetailsPage implements OnInit {
     private router: Router,
     private fb: FormBuilder,
     private alertController: AlertController,
-    private loadingController: LoadingController,
 
   ) { }
 
@@ -63,6 +63,7 @@ export class PersonalBestDetailsPage implements OnInit {
                   const dateB = new Date(b.createdAt).getTime();
                   return dateB - dateA;
                 });
+                this.initialiseChart(this.personalBestRecords);
               }
             } else {
               this.redirectToErrorPage('Personal best not found.');
@@ -75,11 +76,49 @@ export class PersonalBestDetailsPage implements OnInit {
         );
       }
     });
-
     this.initializeForm();
-
   }
 
+  initialiseChart(records: PersonalBestRecord[]) {
+    const ctx = document.getElementById('myChart') as HTMLCanvasElement;
+  
+    Chart.register(CategoryScale, LinearScale, BarController, BarElement);
+
+    // Destroy previous chart instance if it exists
+    Chart.getChart(ctx)?.destroy();
+  
+    // Sort the records by date in descending order
+    const sortedRecords = records.reverse();
+  
+    const labels = sortedRecords.map(record => new Date(record.createdAt).toLocaleDateString()); // Use date as labels
+    const values = sortedRecords.map(record => record.value);
+
+    const myChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: '# of Records',
+            data: values,
+            backgroundColor: 'rgba(255, 202, 56, 0.2)', // Specify the background color for the bars
+            borderColor: 'rgba(255, 202, 56, 1)', // Specify the border color for the bars
+            borderWidth: 1,
+          },
+        ],
+      },
+      options: {
+        scales: {
+          y: {
+            type: 'linear',
+            beginAtZero: true,
+          },
+        },
+      },
+    });
+  }
+  
+  
   ngOnDestroy(){
     if(this.personalBestsSubscribtion){
       this.personalBestsSubscribtion.unsubscribe();

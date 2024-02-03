@@ -44,25 +44,7 @@ export class PersonalBestsService {
       );
   }
 
-  /* addRecordElement(personalBestId: string, newRecordElement: any): Promise<void> {
-    const personalBestRef: AngularFirestoreDocument<PersonalBest> = this.firestore.collection('personal-bests').doc(personalBestId);
-
-    return this.firestore.firestore.runTransaction(async (transaction) => {
-      const personalBestDoc = await transaction.get(personalBestRef.ref);
-
-      if (!personalBestDoc.exists) {
-        throw new Error('Personal Best document does not exist!');
-      }
-
-      // Ensure that 'record' is not undefined
-      const currentRecord: any[] = personalBestDoc.data()?.records || [];
-
-      const updatedRecord = [...currentRecord, newRecordElement];
-
-      transaction.update(personalBestRef.ref, { records: updatedRecord });
-    });
-  } */
-
+  //Add a new personal best record to certain exercise.
   addRecordElement(personalBestId: string, newRecordElement: any): Promise<void> {
     const personalBestRef: AngularFirestoreDocument<PersonalBest> = this.firestore.collection('personal-bests').doc(personalBestId);
 
@@ -85,6 +67,7 @@ export class PersonalBestsService {
     });
   }
 
+  //Remove personal best record to certain exercise.
   removeRecordById(personalBestId: string, recordIdToRemove: string): Promise<void> {
     const personalBestRef: AngularFirestoreDocument<PersonalBest> = this.firestore.collection('personal-bests').doc(personalBestId);
   

@@ -33,6 +33,7 @@
     "@capacitor/status-bar": "5.0.2",
     "@ionic/angular": "^7.0.0",
     "@ionic/pwa-elements": "^3.1.1",
+    "chart.js": "^4.4.1",
     "color": "^4.2.3",
     "firebase": "^9.22.1",
     "image-compressor": "^2.0.3",

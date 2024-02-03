@@ -11,10 +11,3 @@ export interface PersonalBestRecord {
     createdAt: number;
     value: number
 }
-
-/* 
-export interface PersonalBestEnduranceRecord {
-    createdAt: number;
-    time: number
-}
- */
