@@ -15,7 +15,7 @@
 
     <!-- Form -->
     <ion-card-content>
-      <form [formGroup]="recordForm" (ngSubmit)="submitRecord(personalBestExercise.id)">
+      <form [formGroup]="recordForm" (ngSubmit)="submitRecord(personalBestExercise?.id)">
         <ion-item> 
           <ion-label>Date</ion-label>
           <ion-datetime formControlName="createdAt" presentation="date" class="ion-text-center" style="width: 100%;"></ion-datetime>
@@ -31,7 +31,7 @@
         
         <ng-container *ngIf="personalBestExercise && personalBestExercise.type === 'endurance'">
           <ion-item fill="solid" class="ion-margin-bottom">
-            <ion-input type="number" placeholder="Distance" formControlName="value"></ion-input>
+            <ion-input type="number" placeholder="Time" formControlName="value"></ion-input>
             <ion-note slot="end" *ngIf="recordForm.get('value')!.invalid && recordForm.get('value')!.touched">
               <span *ngIf="recordForm.get('value')!.errors?.['required']">Exercise name is required.</span>
             </ion-note>

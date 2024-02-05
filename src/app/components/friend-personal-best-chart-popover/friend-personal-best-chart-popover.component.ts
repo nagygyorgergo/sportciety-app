@@ -1,37 +1,59 @@
-import { Component, OnInit } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, Input, OnInit } from '@angular/core';
 import { Chart, CategoryScale, LinearScale, BarController, BarElement } from 'chart.js';
 import { Subscription } from 'rxjs';
 import { PersonalBest, PersonalBestRecord } from 'src/app/models/personal-best.model';
 import { PersonalBestsService } from 'src/app/services/personal-bests.service';
 
 @Component({
-  selector: 'app-friend-profile-personal-best-details',
-  templateUrl: './friend-profile-personal-best-details.page.html',
-  styleUrls: ['./friend-profile-personal-best-details.page.scss'],
-})
-export class FriendProfilePersonalBestDetailsPage implements OnInit {
+  selector: 'app-friend-personal-best-chart-popover',
+  /* templateUrl: './friend-personal-best-chart-popover.component.html',
+   */
+  styles: [`
+    :host {
+      position: relative;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-  personalBestExerciseId: string |null = null;
-  currentUid: string | null = null;
+    .popover-content {
+      width: 700px;
+      height: 300px;
+      /* display: flex;
+      align-items: center;
+      justify-content: center; */
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+    }
+`],
+
+  template: `
+  <div class="popover-content">
+    <canvas id="myChart" width="400" height="300"></canvas>
+  </div>
+  `,
+  styleUrls: ['./friend-personal-best-chart-popover.component.scss'],
+})
+export class FriendPersonalBestChartPopoverComponent  implements OnInit {
+  @Input() personalBestExerciseId: string |null = null;
   personalBestExercise!: PersonalBest;
   personalBestRecords: PersonalBestRecord[] = [];
 
-  //Subscribtion variable
+
   private personalBestsSubscribtion: Subscription |null = null;
-  private afAuthSubscribtion: Subscription | null = null;
 
   constructor(
-    private route: ActivatedRoute,
-    private router: Router,
     private personalBestsService: PersonalBestsService
   ) { }
 
   ngOnInit() {
-    //Fetch parameter from url
-    this.personalBestExerciseId = this.getExerciseIdFromUrl();
-
     if(this.personalBestExerciseId){
       this.personalBestsSubscribtion = this.personalBestsService.getPersonalBestById(this.personalBestExerciseId)
       .subscribe(
@@ -46,7 +68,8 @@ export class FriendProfilePersonalBestDetailsPage implements OnInit {
             });
             this.initialiseChart(this.personalBestRecords);
           } else {
-            this.redirectToErrorPage('Personal best not found.');
+            //this.redirectToErrorPage('Personal best not found.');
+            console.log('No personal best found')
           }
         },
         (error) => {
@@ -60,23 +83,13 @@ export class FriendProfilePersonalBestDetailsPage implements OnInit {
     if(this.personalBestsSubscribtion){
       this.personalBestsSubscribtion.unsubscribe();
     }
-    if(this.afAuthSubscribtion){
-      this.afAuthSubscribtion.unsubscribe();
-    }
-  }
-
-  getExerciseIdFromUrl(): string | null {
-    // Use paramMap to access route parameters
-    const exerciseId = this.route.snapshot.paramMap.get('exerciseId');
-    // If the friendUid is not found, you can handle it appropriately (return null, throw an error, etc.)
-    return exerciseId;
   }
 
   initialiseChart(records: PersonalBestRecord[]) {
     const ctx = document.getElementById('myChart') as HTMLCanvasElement;
   
     Chart.register(CategoryScale, LinearScale, BarController, BarElement);
-
+  
     // Destroy previous chart instance if it exists
     Chart.getChart(ctx)?.destroy();
   
@@ -85,7 +98,7 @@ export class FriendProfilePersonalBestDetailsPage implements OnInit {
   
     const labels = sortedRecords.map(record => new Date(record.createdAt).toLocaleDateString()); // Use date as labels
     const values = sortedRecords.map(record => record.value);
-
+  
     const myChart = new Chart(ctx, {
       type: 'bar',
       data: {
@@ -101,6 +114,7 @@ export class FriendProfilePersonalBestDetailsPage implements OnInit {
         ],
       },
       options: {
+        maintainAspectRatio: false, // Set to false to allow the chart to occupy the entire canvas
         scales: {
           y: {
             type: 'linear',
@@ -110,9 +124,5 @@ export class FriendProfilePersonalBestDetailsPage implements OnInit {
       },
     });
   }
-
-  redirectToErrorPage(message: string){
-    this.router.navigate(['/error', message]);
-  }
-
+  
 }

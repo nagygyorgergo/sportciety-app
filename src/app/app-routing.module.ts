@@ -72,11 +72,6 @@ const routes: Routes = [
     ...canActivate(redirectUnauthorizedToLogin)
   },
   {
-    path: 'friend-profile-personal-best-details/:exerciseId',
-    loadChildren: () => import('./pages/friend-profile-personal-best-details/friend-profile-personal-best-details.module').then( m => m.FriendProfilePersonalBestDetailsPageModule),
-    ...canActivate(redirectUnauthorizedToLogin)
-  },
-  {
     path: 'error/:message',
     loadChildren: () => import('./pages/error/error.module').then( m => m.ErrorPageModule)
   },
@@ -85,13 +80,6 @@ const routes: Routes = [
     redirectTo: 'error', 
     pathMatch: 'full' 
   },
-
-  /* {
-    path: 'friend-profile-personal-bests',
-    loadChildren: () => import('./pages/friend-profile-personal-bests/friend-profile-personal-bests.module').then( m => m.FriendProfilePersonalBestsPageModule)
-  }, */
-
-  
 ];
 
 @NgModule({

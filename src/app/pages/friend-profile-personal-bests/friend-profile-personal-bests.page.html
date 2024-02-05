@@ -12,21 +12,23 @@
         </ion-card-title>
         <ion-card-subtitle>Tap to expand</ion-card-subtitle>
       </ion-card-header>
-  
+
+      <ng-template #noStrengthRecords>
+        No personal best exercises yet.
+      </ng-template>
+      
       <ng-container *ngIf="isStrenghtExpanded">
         <ion-card-content @fadeIn>
-    
+          <ion-list *ngIf="hasStrengthRecords(); else noStrengthRecords">
+            <ng-container *ngFor="let exercise of personalBests">
+              <ion-item *ngIf="exercise.type === 'strength'">
+                <ion-label (click)="showChart(exercise.id, $event)">{{ exercise.exerciseName }}</ion-label>
+              </ion-item>
+            </ng-container>
+          </ion-list>
         </ion-card-content>
-  
-        <ion-list>
-          <ng-container *ngFor="let exercise of personalBests">
-            <ion-item *ngIf="exercise.type === 'strength'">
-              <ion-label (click)="redirectToExerciseDetails(exercise.id)">{{ exercise.exerciseName }}</ion-label>
-          
-            </ion-item>
-          </ng-container>
-        </ion-list>
       </ng-container>
+      
     </ion-card>
   
     <!-- endurance card -->
@@ -41,20 +43,22 @@
         <ion-card-subtitle>Tap to expand</ion-card-subtitle>
       </ion-card-header>
   
+      <ng-template #noEnduranceRecords>
+        No personal best endurance exercises yet.
+      </ng-template>
+      
       <ng-container *ngIf="isEnduranceExpanded">
         <ion-card-content @fadeIn>
-          
+          <ion-list *ngIf="hasEnduranceRecords(); else noEnduranceRecords">
+            <ng-container *ngFor="let exercise of personalBests">
+              <ion-item *ngIf="exercise.type === 'endurance'">
+                <ion-label (click)="showChart(exercise.id, $event)">{{ exercise.exerciseName }}</ion-label>
+              </ion-item>
+            </ng-container>
+          </ion-list>
         </ion-card-content>
-  
-        <ion-list>
-          <ng-container *ngFor="let exercise of personalBests">
-            <ion-item *ngIf="exercise.type === 'endurance'">
-              <ion-label (click)="redirectToExerciseDetails(exercise.id)">{{ exercise.exerciseName }}</ion-label>
-              
-            </ion-item>
-          </ng-container>
-        </ion-list>
       </ng-container>
+      
     </ion-card>
 
 

@@ -17,7 +17,7 @@ export class PersonalBestDetailsPage implements OnInit {
 
   personalBestExerciseId: string |null = null;
   currentUid: string | null = null;
-  personalBestExercise!: PersonalBest;
+  personalBestExercise: PersonalBest | null = null;
 
   personalBestRecords: PersonalBestRecord[] = [];
 
@@ -136,8 +136,8 @@ export class PersonalBestDetailsPage implements OnInit {
     });
   }
 
-  submitRecord(personalBestId: string){
-    if(this.recordForm.valid){
+  submitRecord(personalBestId: string | undefined){
+    if(this.recordForm.valid && personalBestId){
       const newRecord = {
         createdAt: this.recordForm.get('createdAt')?.value,
         value: this.recordForm.get('value')?.value,
@@ -165,7 +165,7 @@ export class PersonalBestDetailsPage implements OnInit {
         {
           text: 'Delete',
           handler: async () => {
-            if(recordId){
+            if(recordId && this.personalBestExercise){
               this.personalBestsService.removeRecordById(this.personalBestExercise.id, recordId)
               .then(() => {
                 console.log('Record removed successfully');

@@ -2,8 +2,10 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AlertController, PopoverController } from '@ionic/angular';
 import { User } from 'firebase/auth';
 import { Subscription } from 'rxjs';
+import { FriendPersonalBestChartPopoverComponent } from 'src/app/components/friend-personal-best-chart-popover/friend-personal-best-chart-popover.component';
 import { PersonalBest } from 'src/app/models/personal-best.model';
 import { Userdata } from 'src/app/models/user.model';
 import { FriendService } from 'src/app/services/friend.service';
@@ -81,7 +83,10 @@ export class FriendProfilePersonalBestsPage implements OnInit {
     private router: Router,
     private friendService: FriendService,
     private afAuth: AngularFireAuth,
-    private personalBestsService: PersonalBestsService
+    private personalBestsService: PersonalBestsService,
+    public popoverController: PopoverController,
+    private alertController: AlertController,
+
   ) { }
 
   ngOnInit() {
@@ -185,6 +190,48 @@ export class FriendProfilePersonalBestsPage implements OnInit {
     }
     else{
       this.isEnduranceExpanded = !this.isEnduranceExpanded;
+    }
+  }
+
+  // Add these methods to your component class
+  hasStrengthRecords(): boolean {
+    return this.personalBests.some(exercise => exercise.type === 'strength');
+  }
+
+  hasEnduranceRecords(): boolean {
+    return this.personalBests.some(exercise => exercise.type === 'endurance');
+  }
+
+  //Method for alert displaying
+  async alertPopup(header: string, message: string){
+    const alert = await this.alertController.create({
+      header: header,
+      message: message,
+      buttons: ['OK']
+    });
+    await alert.present();
+  }
+
+  async showChart(personalBestId: string, event: Event) {
+    event.stopPropagation();//prevent toggleDetails from showing training details
+    try {
+      if (personalBestId) {
+        const popover = await this.popoverController.create({
+          component: FriendPersonalBestChartPopoverComponent,
+          componentProps: {
+            personalBestExerciseId: personalBestId
+          },
+          event: event,
+          translucent: true
+        });
+        
+        await popover.present();
+      } else {
+        console.warn('Error getting liker user names');
+        this.alertPopup('Problem occurred', 'Can\'t load likers or no one liked yet.');
+      }
+    } catch (error) {
+      console.error('An error occurred:', error);
     }
   }
 }

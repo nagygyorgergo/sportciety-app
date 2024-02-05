@@ -20,10 +20,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LikerPopoverComponent } from './components/liker-popover/liker-popover.component';
+import { FriendPersonalBestChartPopoverComponent } from './components/friend-personal-best-chart-popover/friend-personal-best-chart-popover.component';
 
 
 @NgModule({
-  declarations: [AppComponent, LikerPopoverComponent],
+  declarations: [AppComponent, LikerPopoverComponent, FriendPersonalBestChartPopoverComponent],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,
   HttpClientModule,
   ReactiveFormsModule,
