@@ -39,7 +39,7 @@ export class PersonalBestDetailsPage implements OnInit {
 
   ngOnInit() {
     //Fetch parameter from url
-    this.personalBestExerciseId = this.getExerciseNameFromUrl();
+    this.personalBestExerciseId = this.getExerciseIdFromUrl();
 
     this.afAuthSubscribtion = this.afAuth.authState.subscribe(user => {
       if (user) {
@@ -117,8 +117,7 @@ export class PersonalBestDetailsPage implements OnInit {
       },
     });
   }
-  
-  
+   
   ngOnDestroy(){
     if(this.personalBestsSubscribtion){
       this.personalBestsSubscribtion.unsubscribe();
@@ -194,8 +193,8 @@ export class PersonalBestDetailsPage implements OnInit {
     await alert.present();
   }
 
-  getExerciseNameFromUrl(){
-    const exerciseName = this.activatedRoute.snapshot.paramMap.get('id');
+  getExerciseIdFromUrl(){
+    const exerciseName = this.activatedRoute.snapshot.paramMap.get('exerciseId');
     return exerciseName;
   }
 

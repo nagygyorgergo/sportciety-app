@@ -10,18 +10,6 @@
 
 <ion-content [fullscreen]="true">
   
-  <!-- <ion-tabs style="position: sticky; bottom: 0; z-index: 999999; padding-bottom: 50px;">
-    <ion-tab-bar slot="bottom" style="position: fixed; bottom: 0; width: 100%; max-height: fit-content;">
-      <ion-tab-button [routerLink]="['/friend-profile/friend-profile-posts', friendUid]" routerLinkActive="ion-tab-button-selected">
-        <ion-icon name="play-circle"></ion-icon>
-        Posts
-      </ion-tab-button>
-      <ion-tab-button [routerLink]="['/friend-profile/friend-profile-trainings', friendUid]" routerLinkActive="ion-tab-button-selected">
-        <ion-icon name="barbell-outline"></ion-icon>
-        Trainings
-      </ion-tab-button>
-    </ion-tab-bar>
-  </ion-tabs> -->
   <ion-tabs style="position: sticky; bottom: 0; z-index: 999999; padding-bottom: 50px;">
     <ion-tab-bar slot="bottom" style="position: fixed; bottom: 0; width: 100%; max-height: fit-content;">
       <ion-tab-button [routerLink]="['/friend-profile/friend-profile-posts', friendUid]" routerLinkActive="ion-tab-button-selected" class="custom-tab-button">
@@ -30,17 +18,13 @@
       </ion-tab-button>
       <ion-tab-button [routerLink]="['/friend-profile/friend-profile-trainings', friendUid]" routerLinkActive="ion-tab-button-selected" class="custom-tab-button">
         <ion-icon name="barbell-outline"></ion-icon>
-        Trainings
+        Shared trainings
+      </ion-tab-button>
+      <ion-tab-button [routerLink]="['/friend-profile/friend-profile-personal-bests', friendUid]" routerLinkActive="ion-tab-button-selected" class="custom-tab-button">
+        <ion-icon name="bar-chart-outline"></ion-icon>
+        Personal bests
       </ion-tab-button>
     </ion-tab-bar>
   </ion-tabs>
-  
-  
-  
-  
-  
-
-  
-  
   
 </ion-content>

@@ -1,0 +1,61 @@
+<ion-content [fullscreen]="true">
+
+  <ion-content [fullscreen]="true">
+    <!-- strength card -->
+    <ion-card (click)="toggleDetails('strength')">
+      <ion-img alt="Strenght image" [src]="strenghtImageUrl" style="height: 250px;"></ion-img>
+      <ion-card-header>
+        <ion-card-title>
+          <ng-container>
+            Strength
+          </ng-container>
+        </ion-card-title>
+        <ion-card-subtitle>Tap to expand</ion-card-subtitle>
+      </ion-card-header>
+  
+      <ng-container *ngIf="isStrenghtExpanded">
+        <ion-card-content @fadeIn>
+    
+        </ion-card-content>
+  
+        <ion-list>
+          <ng-container *ngFor="let exercise of personalBests">
+            <ion-item *ngIf="exercise.type === 'strength'">
+              <ion-label (click)="redirectToExerciseDetails(exercise.id)">{{ exercise.exerciseName }}</ion-label>
+          
+            </ion-item>
+          </ng-container>
+        </ion-list>
+      </ng-container>
+    </ion-card>
+  
+    <!-- endurance card -->
+    <ion-card (click)="toggleDetails('endurance')">
+      <ion-img alt="Endurance image" [src]="enduranceImageUrl" style="height: 250px;"></ion-img>
+      <ion-card-header>
+        <ion-card-title>
+          <ng-container>
+            Endurance
+          </ng-container>
+        </ion-card-title>
+        <ion-card-subtitle>Tap to expand</ion-card-subtitle>
+      </ion-card-header>
+  
+      <ng-container *ngIf="isEnduranceExpanded">
+        <ion-card-content @fadeIn>
+          
+        </ion-card-content>
+  
+        <ion-list>
+          <ng-container *ngFor="let exercise of personalBests">
+            <ion-item *ngIf="exercise.type === 'endurance'">
+              <ion-label (click)="redirectToExerciseDetails(exercise.id)">{{ exercise.exerciseName }}</ion-label>
+              
+            </ion-item>
+          </ng-container>
+        </ion-list>
+      </ng-container>
+    </ion-card>
+
+
+</ion-content>

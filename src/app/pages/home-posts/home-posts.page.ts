@@ -189,4 +189,5 @@ export class HomePostsPage implements OnInit {
   redirectToFriendProfile(friendUid: string) {;
     this.router.navigate(['/friend-profile/friend-profile-posts', friendUid]);
   }
+
 }

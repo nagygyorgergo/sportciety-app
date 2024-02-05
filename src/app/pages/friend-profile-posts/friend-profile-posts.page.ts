@@ -65,44 +65,44 @@ export class FriendProfilePostsPage implements OnInit {
           (user) => {
             if (user) {
               this.currentUserFrienduids = user.friendUids;
+              // Check if any of the user values are null
+              if (this.currentUserFrienduids !== null) {
+                this.friendUid = this.getFriendUidFromUrl();
+                console.log(this.friendUid);
+        
+                if (this.friendUid) {
+                  this.friendSubscription = this.friendService.getFriendByUid(this.friendUid).subscribe(
+                    (user) => {
+                      if (user && this.currentUserFrienduids.includes(user.uid)) {
+                        this.friend.dateOfBirth = user.dateOfBirth;
+                        this.friend.email = user.email;
+                        this.friend.uid = user.uid;
+                        this.friend.username = user.username;
+                        this.friend.imageUrl = user.imageUrl;
+        
+                        // Call loadNextPage only if none of the user values are null
+                        if (
+                          this.friend.dateOfBirth !== null &&
+                          this.friend.email !== null &&
+                          this.friend.uid !== null &&
+                          this.friend.username !== null &&
+                          this.friend.imageUrl !== null
+                        ) {
+                          this.loadNextPage();
+                        }
+                      } else {
+                        //If user is not friend of current user, redirect to error
+                        this.redirectToErrorPage('No friend found');
+                      }
+                    },
+                  );
+                }
+              }
             } else {
               this.redirectToErrorPage('Couldnt find friend.');
             }
           },
         );
-  
-        // Check if any of the user values are null
-        if (this.currentUserFrienduids !== null) {
-          this.friendUid = this.getFriendUidFromUrl();
-          console.log(this.friendUid);
-  
-          if (this.friendUid) {
-            this.friendSubscription = this.friendService.getFriendByUid(this.friendUid).subscribe(
-              (user) => {
-                if (user) {
-                  this.friend.dateOfBirth = user.dateOfBirth;
-                  this.friend.email = user.email;
-                  this.friend.uid = user.uid;
-                  this.friend.username = user.username;
-                  this.friend.imageUrl = user.imageUrl;
-  
-                  // Call loadNextPage only if none of the user values are null
-                  if (
-                    this.friend.dateOfBirth !== null &&
-                    this.friend.email !== null &&
-                    this.friend.uid !== null &&
-                    this.friend.username !== null &&
-                    this.friend.imageUrl !== null
-                  ) {
-                    this.loadNextPage();
-                  }
-                } else {
-                  this.redirectToErrorPage('No friend found');
-                }
-              },
-            );
-          }
-        }
       }
     });
   }

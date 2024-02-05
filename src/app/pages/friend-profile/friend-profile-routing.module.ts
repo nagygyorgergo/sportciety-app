@@ -17,6 +17,14 @@ const routes: Routes = [
         loadChildren: () => import('../friend-profile-trainings/friend-profile-trainings.module').then(m => m.FriendProfileTrainingsPageModule)
       },
       {
+        path: 'friend-profile-personal-bests/:friendUid',
+        loadChildren: () => import('../friend-profile-personal-bests/friend-profile-personal-bests.module').then(m => m.FriendProfilePersonalBestsPageModule)
+      },
+      /* {
+        path: 'friend-profile-personal-best-details/:exerciseId',
+        loadChildren: () => import('../friend-profile-personal-best-details/friend-profile-personal-best-details.module').then(m => m.FriendProfilePersonalBestDetailsPageModule)
+      }, */
+      {
         path: '',
         redirectTo: '/friend-profile/friend-profile-posts/:friendUid',
         pathMatch: 'full'

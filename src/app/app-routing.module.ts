@@ -67,8 +67,13 @@ const routes: Routes = [
     ...canActivate(redirectUnauthorizedToLogin)
   },
   {
-    path: 'personal-best-details/:id',
+    path: 'personal-best-details/:exerciseId',
     loadChildren: () => import('./pages/personal-best-details/personal-best-details.module').then(m => m.PersonalBestDetailsPageModule),
+    ...canActivate(redirectUnauthorizedToLogin)
+  },
+  {
+    path: 'friend-profile-personal-best-details/:exerciseId',
+    loadChildren: () => import('./pages/friend-profile-personal-best-details/friend-profile-personal-best-details.module').then( m => m.FriendProfilePersonalBestDetailsPageModule),
     ...canActivate(redirectUnauthorizedToLogin)
   },
   {
@@ -80,6 +85,12 @@ const routes: Routes = [
     redirectTo: 'error', 
     pathMatch: 'full' 
   },
+
+  /* {
+    path: 'friend-profile-personal-bests',
+    loadChildren: () => import('./pages/friend-profile-personal-bests/friend-profile-personal-bests.module').then( m => m.FriendProfilePersonalBestsPageModule)
+  }, */
+
   
 ];
 

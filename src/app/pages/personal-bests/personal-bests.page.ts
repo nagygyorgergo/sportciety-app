@@ -73,11 +73,10 @@ export class PersonalBestsPage implements OnInit {
     this.afAuth.authState.subscribe(user => {
       if (user) {
         this.currentUid = user.uid;
-        this.personalBestsService.getPersonalBestsByUid(this.currentUid).subscribe(
+        this.personalBestsSubscribtion = this.personalBestsService.getPersonalBestsByUid(this.currentUid).subscribe(
           personalBests => {
             this.personalBests = personalBests;
             console.log('Personal Bests:', personalBests);
-            // Do something with the fetched personal bests
           },
           error => {
             console.error('Error fetching personal bests:', error);
@@ -164,8 +163,8 @@ export class PersonalBestsPage implements OnInit {
   }
 
   //Redirect to details
-  redirectToExerciseDetails(exerciseName: string){
-    this.router.navigate(['/personal-best-details', exerciseName]);
+  redirectToExerciseDetails(exerciseId: string){
+    this.router.navigate(['/personal-best-details', exerciseId]);
   }
 
   //Prevent from closing card on form clicking

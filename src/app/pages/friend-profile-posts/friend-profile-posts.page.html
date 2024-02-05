@@ -1,8 +1,8 @@
 <ion-content class="ion-padding" [fullscreen]="true">
-  <ng-template #notAllowed>
+  <!-- <ng-template #notAllowed>
     You are not allowed to reach this page.
-  </ng-template>
-  <ng-container *ngIf="currentUserFrienduids.includes(this.friendUid ?? ''); else notAllowed">
+  </ng-template> -->
+  <ng-container *ngIf="currentUserFrienduids.includes(this.friendUid ?? '');">
     <div class="preview">
       <ion-avatar>
         <img  [src]="friend.imageUrl">
