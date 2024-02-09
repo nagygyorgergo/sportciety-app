@@ -53,7 +53,7 @@ export class SignupPage implements OnInit {
   getPassword(){
     return this.credentials.get('password');
   }
-
+  
   async signup(): Promise<void> {
     const loading = await this.loadingController.create();
     await loading.present();
@@ -77,6 +77,8 @@ export class SignupPage implements OnInit {
   
           await this.userService.createUser(user);
           console.log('User added successfully.');
+          this.showAlert('Registration Successful', 'A verification email has been sent to your email address. Please verify your email before logging in.');
+          this.authService.logout();
         } else {
           this.showAlert('Registration failed', 'Try again');
         }
@@ -85,10 +87,11 @@ export class SignupPage implements OnInit {
       console.error(error);
     } finally {
       await loading.dismiss();
-      this.router.navigateByUrl('/', { replaceUrl: true });
+      this.redirectToLogin();
     }
-  }
-  
+}
+
+
   async showAlert(header:any, message:any){
     const alert = await this.alertController.create({
       header,

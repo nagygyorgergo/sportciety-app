@@ -36,17 +36,34 @@ export class LoginPage implements OnInit {
     return this.credentials.get('password');
   }
 
-  async login(){
+  async login(): Promise<void> {
     const loading = await this.loadingController.create();
     await loading.present();
-
-    const user = await this.authService.login(this.credentials.value);
-    await loading.dismiss();
-
-    if(user){
-      this.router.navigateByUrl('/', {replaceUrl: true});
-    }else{
-      this.showAlert('Login failed', 'Try again');
+  
+    try {
+      const email = this.getEmail()?.value;
+      const password = this.getPassword()?.value;
+  
+      if (email && password) {
+        const user = await this.authService.login(this.credentials.value);
+  
+        if (user) {
+          if (user.emailVerified) {
+            // Proceed with login
+            console.log('User logged in successfully.');
+            // Redirect the user to the desired page
+            this.router.navigateByUrl('/', {replaceUrl: true});
+          } else {
+            this.showAlert('Email Verification Required', 'Please verify your email before logging in.');
+          }
+        } else {
+          this.showAlert('Login failed', 'Invalid email or password.');
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      await loading.dismiss();
     }
   }
 

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from '@angular/fire/auth';
+import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, sendEmailVerification } from '@angular/fire/auth';
 import { getAuth, AuthError } from 'firebase/auth';
 @Injectable({
   providedIn: 'root'
@@ -7,12 +7,19 @@ import { getAuth, AuthError } from 'firebase/auth';
 export class AuthService {
 
   constructor(private auth: Auth) { }
-
+ 
   async register(email: string, password: string) {
     try { 
       const auth = getAuth();
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
+  
+      // Check if user is not null before sending email verification
+      if (user) {
+        // Send email verification
+        await sendEmailVerification(user);
+      }
+  
       return user;
     } catch (error) {
       const errorCode = (error as AuthError).code;
@@ -29,7 +36,7 @@ export class AuthService {
       return null;
     }
   }
-   
+ 
   async login({ email, password }: { email: string; password: string }) {
     try {
       const auth = getAuth();
