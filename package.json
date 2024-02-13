@@ -39,8 +39,10 @@
     "image-compressor": "^2.0.3",
     "image-size": "^1.1.1",
     "ionicons": "^7.0.0",
+    "ng2-img-max": "^2.2.9",
     "ng2-search-filter": "^0.5.1",
     "ngx-filter-pipe": "^2.1.2",
+    "ngx-image-compress": "^15.1.6",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.13.0"

@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { NavigationExtras, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Camera, CameraResultType, CameraSource, Photo } from '@capacitor/camera';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
-import { Post } from 'src/app/models/post.model';
 import {PostService } from 'src/app/services/post.service';
 
 @Component({

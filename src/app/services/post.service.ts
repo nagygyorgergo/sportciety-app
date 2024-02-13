@@ -2,14 +2,13 @@ import { Injectable } from '@angular/core';
 import { Auth, User } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { collection, getDocs, limit, where } from '@angular/fire/firestore';
-import { Storage, getDownloadURL, listAll, ref, uploadString } from '@angular/fire/storage/'
+import { Storage, getDownloadURL, listAll, ref } from '@angular/fire/storage/'
 import { Photo } from '@capacitor/camera';
 import { Post } from '../models/post.model';
 import { Firestore} from '@angular/fire/firestore';
 import { query, orderBy, getDoc, doc } from "firebase/firestore";  
-import { StorageReference, UploadTask, deleteObject, uploadBytes } from 'firebase/storage';
+import { deleteObject, uploadBytes } from 'firebase/storage';
 import { Userdata } from '../models/user.model';
-import { Observable, finalize } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -98,7 +97,7 @@ export class PostService {
     }
   }
   
-  //image upload for posts
+  /* //image upload for posts
   async uploadImage(cameraFile: Photo, postId: string) {
     const user: User | null = this.auth.currentUser;
     if (user) {
@@ -116,8 +115,63 @@ export class PostService {
       return null;
     }
     return null;
-  }
+  } */
 
+  async uploadImage(cameraFile: Photo, postId: string): Promise<boolean | null> {
+    const user: User | null = this.auth.currentUser;
+    if (user && cameraFile.base64String) {
+      const path = `uploads/${user.uid}/${postId}.png`;
+      const storageRef = ref(this.storage as Storage, path);
+  
+      try {
+        // Convert base64 to Blob
+        const blob = await this.base64ToBlob(cameraFile.base64String);
+  
+        // Compress the image
+        const compressedImage = await this.compressImage(blob);
+  
+        // Upload compressed image
+        await uploadBytes(storageRef, compressedImage);
+        return true;
+      } catch (e) {
+        console.error(e);
+        return null;
+      }
+    }
+    return null;
+  }
+  
+  private async base64ToBlob(base64: string): Promise<Blob> {
+    const response = await fetch(`data:image/png;base64,${base64}`);
+    const blob = await response.blob();
+    return blob;
+  }
+  
+  private async compressImage(blob: Blob): Promise<Blob> {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = URL.createObjectURL(blob);
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d')!;
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0, img.width, img.height);
+  
+        // Adjust the output format to 'image/jpeg' for better compression
+        canvas.toBlob((compressedBlob) => {
+          if (compressedBlob) {
+            resolve(compressedBlob);
+          } else {
+            reject(new Error('Image compression failed'));
+          }
+        }, 'image/jpeg', 0.5); // Adjust the quality (0-1) as needed, using 'image/jpeg'
+      };
+      img.onerror = reject;
+    });
+  }
+  
+ 
   //Get user's own posts
   async getUserPosts(startIndex: number, endIndex: number, uid: string): Promise<Post[]> {
     if (uid) {
