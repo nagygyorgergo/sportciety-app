@@ -24,7 +24,7 @@ import { FriendPersonalBestChartPopoverComponent } from './components/friend-per
 
 
 @NgModule({
-  declarations: [AppComponent, LikerPopoverComponent, FriendPersonalBestChartPopoverComponent],
+  declarations: [AppComponent],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,
   HttpClientModule,
   ReactiveFormsModule,

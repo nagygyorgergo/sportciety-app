@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { redirectUnauthorizedTo, redirectLoggedInTo, canActivate } from '@angular/fire/auth-guard';
+import { NotFoundComponent } from './components/not-found-component/not-found-component.component';
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
 const redirectLoggedInToHome = () => redirectLoggedInTo(['']);
@@ -10,7 +11,7 @@ const routes: Routes = [
     path: '',
     redirectTo: 'home',
     pathMatch: 'full'
-  },
+  }, 
   {
     path: 'login',
     loadChildren: () => import('./pages/login/login.module').then( m => m.LoginPageModule),
@@ -75,11 +76,10 @@ const routes: Routes = [
     path: 'error/:message',
     loadChildren: () => import('./pages/error/error.module').then( m => m.ErrorPageModule)
   },
-  { 
-    path: '**', 
-    redirectTo: 'error', 
-    pathMatch: 'full' 
-  },
+  {
+    path: '**',
+    component: NotFoundComponent
+  }
 ];
 
 @NgModule({

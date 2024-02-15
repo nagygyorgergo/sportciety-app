@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { FriendProfileTrainingsPageRoutingModule } from './friend-profile-trainings-routing.module';
 
 import { FriendProfileTrainingsPage } from './friend-profile-trainings.page';
+import { FriendPersonalBestChartPopoverComponent } from 'src/app/components/friend-personal-best-chart-popover/friend-personal-best-chart-popover.component';
 
 @NgModule({
   imports: [
@@ -15,6 +16,6 @@ import { FriendProfileTrainingsPage } from './friend-profile-trainings.page';
     IonicModule,
     FriendProfileTrainingsPageRoutingModule
   ],
-  declarations: [FriendProfileTrainingsPage]
+  declarations: [FriendProfileTrainingsPage, FriendPersonalBestChartPopoverComponent]
 })
 export class FriendProfileTrainingsPageModule {}

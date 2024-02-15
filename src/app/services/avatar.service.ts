@@ -1,15 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Auth } from '@angular/fire/auth';
-/* import { ref } from '@angular/fire/database';
-import { Firestore, doc, docData } from '@angular/fire/firestore';
-import { Storage } from '@angular/fire/storage';*/
 import { Photo } from '@capacitor/camera'; 
 
-import { DocumentData, Firestore, doc, docData, getDoc, getFirestore, setDoc } from '@angular/fire/firestore';
-import { getAuth, User } from 'firebase/auth';
+import { Firestore, doc, docData, setDoc } from '@angular/fire/firestore';
+import { User } from 'firebase/auth';
 import { getDownloadURL, ref, Storage, uploadString } from '@angular/fire/storage';
-import { Observable, catchError, from, of } from 'rxjs';
-
 
 @Injectable({
   providedIn: 'root'

@@ -20,8 +20,8 @@ export class ErrorPage implements OnInit {
   }
 
   getMessageFromUrl(){
-    const exerciseName = this.activatedRoute.snapshot.paramMap.get('message');
-    return exerciseName;
+    const message = this.activatedRoute.snapshot.paramMap.get('message');
+    return message;
   }
 
   //Redirect to error if personalBestExercise's uid id not matching with current user's uid
